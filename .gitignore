@@ -4,10 +4,9 @@
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
 ## Vs trash
-*.gitattributes
-31_TLinguistic*.sln
-31_TLinguistic*.vcxproj
-31_TLinguistic*.vcxproj.filters
+*.sln
+*.vcxproj
+*.vcxproj.filters
 
 # User-specific files
 *.rsuser
