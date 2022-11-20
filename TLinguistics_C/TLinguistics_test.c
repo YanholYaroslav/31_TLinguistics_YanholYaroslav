@@ -47,19 +47,19 @@ void main(void) {
 	wprintf(L"\n\n");
 	OutputWord(word2, stdout, "txt");
 
-	FILE* f = fopen("TLinguistics_test.txt", "w, ccs=UTF-8");			//
+	FILE* f = fopen("TLinguistics_test.txt", "w");			//
 	OutputWord(word2, f, "txt");
 	fclose(f);
 
-	FILE* f1 = fopen("TLinguistics_test.dat", "wb, ccs=UTF-8");			//, ccs=UTF-8
+	FILE* f1 = fopen("TLinguistics_test.dat", "wb");			//, ccs=UTF-8
 	OutputWord(word2, f1, "bin");
 	fclose(f1);
 
-	FILE* fw = fopen("TLinguistics_test.dat", "wb, ccs=UTF-8");			//, ccs=UTF-8
+	FILE* fw = fopen("TLinguistics_test.dat", "wb");			//, ccs=UTF-8
 	InputWord(word2, f1, "bin");
 	fclose(fw);
 
-	TransferWord(word2);
+	//TransferWord(word2);
 
 	wprintf(L"\n!!!\n");
 	OutputWord(word2, stdout, "txt");
