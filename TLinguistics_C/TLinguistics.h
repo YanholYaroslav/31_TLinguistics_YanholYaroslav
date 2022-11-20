@@ -53,7 +53,7 @@
 /* Determine if there is the same wide character in the string
 	@param[c] - character to find
 	@param[str[]] - wide character array (wide character string) which can contain the wanted character
-	@result – int :
+	@result â€“ int :
 	1 - if found,
 	0 - if not found
 */
@@ -113,7 +113,7 @@ extern void SyllsArray_Destructor(SyllsArray* sylarr);
 
 /* Function of creating a new SyllsArray object:
 	create new syllables array
-	@result – SyllsArray*
+	@result â€“ SyllsArray*
 */
 extern SyllsArray* SyllsArray_New(void);
 
@@ -125,12 +125,12 @@ extern void SyllsArray_Delete(SyllsArray* sylarr);
 
 /* Input syllables array:
 	input word from console/file/binfile
-	@param[sylarr] - OUT – SyllsArray* for return
+	@param[sylarr] - OUT â€“ SyllsArray* for return
 	@param[istream] - input stream (stdin, FILE*)
 	@param[f_type] - char string to tell the type of file ("txt" or "bin")
-	@result – int :
+	@result â€“ int :
 	0 - in the case of success,
-	error_code – number of error
+	error_code â€“ number of error
 */
 extern int InputSyllsArray(SyllsArray* sylarr, FILE* istream, const char* f_type);
 
@@ -181,7 +181,7 @@ extern void TWord_Destructor(TWord* word);
 
 /* Function of creating a new TWord object:
     create new word
-	@result – TWord*
+	@result â€“ TWord*
 */
 extern TWord* TWord_New(void);
 
@@ -195,12 +195,12 @@ extern void TWord_Delete(TWord* word);
 
 /* Input word:
 	input word from console/file/binfile
-	@param[w] - OUT – Word for return
+	@param[w] - OUT â€“ Word for return
 	@param[istream] - input stream (stdin, FILE*)
 	@param[f_type] - char string to tell the type of file ("txt" or "bin")
-	@result – int :
+	@result â€“ int :
 	0 - in the case of success,
-	error_code – number of error
+	error_code â€“ number of error
 */
 extern int InputWord(TWord* w, FILE* istream, const char* f_type);
 
@@ -215,12 +215,12 @@ extern void OutputWord(TWord* w, FILE* ostream, const char* f_type);
 
 /* Input word text field:
 	input word  text field from console/file/binfile
-	@param[w] - OUT – Word for return
+	@param[w] - OUT â€“ Word for return
 	@param[istream] - input stream (stdin, FILE*)
 	@param[f_type] - char string to tell the type of file ("txt" or "bin")
-	@result – int :
+	@result â€“ int :
 	0 - in the case of success,
-	error_code – number of error
+	error_code â€“ number of error
 */
 extern int InputWordText(TWord* w, FILE* istream, const char* f_type);
 
@@ -256,17 +256,17 @@ extern void BreakdownWord(TWord* w, SyllsArray* sylarr);
 /* Combine word:
 	combine syllables unto a word
 	@param[in_arr] - IN - SyllablesArray to combine
-	@result – new TWord*
+	@result â€“ new TWord*
 */
 extern TWord* CombineWord(SyllsArray* sylarr);
 
 /* Input word by parts:
 	input word from console/file/binfile by parts
-	@param[w] - OUT – Word for return
+	@param[w] - OUT â€“ Word for return
 	@param[mode] - input mode (L"c" - console, L"f" - file, L"b" - binary file)
-	@result – int :
+	@result â€“ int :
 	0 - in the case of success,
-	error_code – number of error
+	error_code â€“ number of error
 */
 extern int InputWordByParts(TWord* w, FILE* istream, const char* f_type);
 
@@ -305,11 +305,11 @@ extern void TransferWord(TWord* w);
 
 /* Input prefix:
 	input prefix from console/file/binfile
-	@param[w] - OUT – Word for return
+	@param[w] - OUT â€“ Word for return
 	@param[mode] - input mode ("c" - console, "f" - file, "b" - binary file)
-	@result – int :
+	@result â€“ int :
 	0 - in the case of success,
-	error_code – number of error
+	error_code â€“ number of error
 */
 extern int InputPrefix(TWord* w, const wchar_t* mode);
 
@@ -323,11 +323,11 @@ extern void OutputPrefix(TWord* w, const wchar_t* mode);
 
 /* Input radix:
 	input radix from console/file/binfile
-	@param[w] - OUT – Word for return
+	@param[w] - OUT â€“ Word for return
 	@param[mode] - input mode ("c" - console, "f" - file, "b" - binary file)
-	@result – int :
+	@result â€“ int :
 	0 - in the case of success,
-	error_code – number of error
+	error_code â€“ number of error
 */
 extern int InputRadix(TWord* w, const wchar_t* mode);
 
@@ -341,11 +341,11 @@ extern void OutputRadix(TWord* w, const wchar_t* mode);
 
 /* Input suffix:
 	input suffix from console/file/binfile
-	@param[w] - OUT – Word for return
+	@param[w] - OUT â€“ Word for return
 	@param[mode] - input mode ("c" - console, "f" - file, "b" - binary file)
-	@result – int :
+	@result â€“ int :
 	0 - in the case of success,
-	error_code – number of error
+	error_code â€“ number of error
 */
 extern int InputSuffix(TWord* w, const wchar_t* mode);
 
@@ -359,11 +359,11 @@ extern void OutputSuffix(TWord* w, const wchar_t* mode);
 
 /* Input ending:
 	input ending from console/file/binfile
-	@param[w] - OUT – Word for return
+	@param[w] - OUT â€“ Word for return
 	@param[mode] - input mode ("c" - console, "f" - file, "b" - binary file)
-	@result – int :
+	@result â€“ int :
 	0 - in the case of success,
-	error_code – number of error
+	error_code â€“ number of error
 */
 extern int InputEnding(TWord* w, const wchar_t* mode);
 

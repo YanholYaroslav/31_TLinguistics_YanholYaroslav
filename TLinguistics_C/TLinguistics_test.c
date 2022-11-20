@@ -28,7 +28,7 @@ void main(void) {
 	_setmode(_fileno(stdin), _O_U16TEXT);
 	*/
 
-	/* Test 1 – Create, Input, Output, Delete TWord object */
+	/* Test 1 вЂ“ Create, Input, Output, Delete TWord object */
 	TWord* word1 = TWord_New();
 	wchar_t* modec = L"c";
 	fwprintf(stdout, L"Put in just word or its fields sep by space:\n");
@@ -36,26 +36,26 @@ void main(void) {
 	OutputWord(word1, stdout, "txt");
 
 	SyllsArray* omg = SyllsArray_New();
-	BreakdownWord(word1, omg);				// Маяк _ _ _ 0 _		чайка _ _ _ 0 _				майор _ _ _ 0 _
-	TWord* word2 = CombineWord(omg);			// Принц _ _ _ 0 _
+	BreakdownWord(word1, omg);				// РњР°СЏРє _ _ _ 0 _		С‡Р°Р№РєР° _ _ _ 0 _				РјР°Р№РѕСЂ _ _ _ 0 _
+	TWord* word2 = CombineWord(omg);			// РџСЂРёРЅС† _ _ _ 0 _
 
-	// Академія _ _ _ 0 _	колодязь _ _ _ 0 _	садівник _ _ _ 0 _	Харків _ _ _ 0 _	Зошит _ _ _ 0 _
-	// Робота _ _ _ 0 _		Аеробус _ _ _ 0 _	згрібати _ _ _ 0 _	безударний _ _ _ 0 _	Польовий _ _ _ 0 _		найскладніший _ _ _ 0 _
-	// Кільце _ _ _ 0 _		Бур'ян _ _ _ 0 _	Апельсин _ _ _ 0 _
+	// РђРєР°РґРµРјС–СЏ _ _ _ 0 _	РєРѕР»РѕРґСЏР·СЊ _ _ _ 0 _	СЃР°РґС–РІРЅРёРє _ _ _ 0 _	РҐР°СЂРєС–РІ _ _ _ 0 _	Р—РѕС€РёС‚ _ _ _ 0 _
+	// Р РѕР±РѕС‚Р° _ _ _ 0 _		РђРµСЂРѕР±СѓСЃ _ _ _ 0 _	Р·РіСЂС–Р±Р°С‚Рё _ _ _ 0 _	Р±РµР·СѓРґР°СЂРЅРёР№ _ _ _ 0 _	РџРѕР»СЊРѕРІРёР№ _ _ _ 0 _		РЅР°Р№СЃРєР»Р°РґРЅС–С€РёР№ _ _ _ 0 _
+	// РљС–Р»СЊС†Рµ _ _ _ 0 _		Р‘СѓСЂ'СЏРЅ _ _ _ 0 _	РђРїРµР»СЊСЃРёРЅ _ _ _ 0 _
 	wprintf(L"\n\n");
 	OutputSyllsArray(omg, stdout, "txt");
 	wprintf(L"\n\n");
 	OutputWord(word2, stdout, "txt");
 
-	FILE* f = fopen("TLinguistics_test.txt", "w, ccs=UTF-16LE");			//, ccs=UTF-8
+	FILE* f = fopen("TLinguistics_test.txt", "w, ccs=UTF-8");			//
 	OutputWord(word2, f, "txt");
 	fclose(f);
 
-	FILE* f1 = fopen("TLinguistics_test.dat", "wb, ccs=UTF-16LE");			//, ccs=UTF-8
+	FILE* f1 = fopen("TLinguistics_test.dat", "wb, ccs=UTF-8");			//, ccs=UTF-8
 	OutputWord(word2, f1, "bin");
 	fclose(f1);
 
-	FILE* fw = fopen("TLinguistics_test.dat", "wb, ccs=UTF-16LE");			//, ccs=UTF-8
+	FILE* fw = fopen("TLinguistics_test.dat", "wb, ccs=UTF-8");			//, ccs=UTF-8
 	InputWord(word2, f1, "bin");
 	fclose(fw);
 

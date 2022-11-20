@@ -101,17 +101,17 @@ int InputSyllsArray(SyllsArray* sylarr, FILE* istream, const char* f_type) {
 		int ostream_mode = _setmode(_fileno(stdout), _O_U16TEXT);
 
 		int n;
-		fwprintf(stdout, L"Введіть кількість слогів для введення (n <= 20): ");
+		fwprintf(stdout, L"Р’РІРµРґС–С‚СЊ РєС–Р»СЊРєС–СЃС‚СЊ СЃР»РѕРіС–РІ РґР»СЏ РІРІРµРґРµРЅРЅСЏ (n <= 20): ");
 		int r_s = fwscanf(istream, L"%d", &n);
 		if (n > sylarr->private->n) {
-			fwprintf(stdout, L"\nВведено занадто велике число (n > 20)!");
+			fwprintf(stdout, L"\nР’РІРµРґРµРЅРѕ Р·Р°РЅР°РґС‚Рѕ РІРµР»РёРєРµ С‡РёСЃР»Рѕ (n > 20)!");
 			_setmode(_fileno(istream), istream_mode);
 			_setmode(_fileno(stdout), ostream_mode);
 			return -1;
 		}
 		sylarr->private->n = n;
 
-		fwprintf(stdout, L"Введіть слоги, розділяючи пропуском:\n");
+		fwprintf(stdout, L"Р’РІРµРґС–С‚СЊ СЃР»РѕРіРё, СЂРѕР·РґС–Р»СЏСЋС‡Рё РїСЂРѕРїСѓСЃРєРѕРј:\n");
 		for (int i = 0; i < sylarr->private->n; i++) {
 			int r_s = fwscanf(istream, L"%s", sylarr->private->sylls[i]);
 			if (!r_s) {
@@ -177,7 +177,7 @@ void OutputSyllsArray(SyllsArray* sylarr, FILE* ostream, const char* f_type) {
 
 	if (ostream == stdout) {
 
-		fwprintf(ostream, L"%d слогів: ", sylarr->private->n);
+		fwprintf(ostream, L"%d СЃР»РѕРіС–РІ: ", sylarr->private->n);
 		for (int i = 0; i < sylarr->private->n; i++) {
 			for (int j = 0; j < SyllsLen; j++) {
 				if (sylarr->private->sylls[i][j] == (void*)0) break;
@@ -220,16 +220,16 @@ void TWord_Constructor(TWord* word) {
 	word->private = malloc(sizeof(TWordPrivate));
 	wmemcpy(word->private->text, L"", wcslen(L""));
 	word->private->text[wcslen(L"")] = (void*)0;
-	wmemcpy(word->private->type, L"*не_визначено*", wcslen(L"*не_визначено*"));
-	word->private->type[wcslen(L"*не_визначено*")] = (void*)0;
-	wmemcpy(word->private->gender, L"*не_визначено*", wcslen(L"*не_визначено*"));
-	word->private->gender[wcslen(L"*не_визначено*")] = (void*)0;
-	wmemcpy(word->private->quantity, L"*не_визначено*", wcslen(L"*не_визначено*"));
-	word->private->quantity[wcslen(L"*не_визначено*")] = (void*)0;
-	wmemcpy(word->private->person, L"*не_визначено*", wcslen(L"*не_визначено*"));
-	word->private->person[wcslen(L"*не_визначено*")] = (void*)0;
-	wmemcpy(word->private->sort, L"*не_визначено*", wcslen(L"*не_визначено*"));
-	word->private->sort[wcslen(L"*не_визначено*")] = (void*)0;
+	wmemcpy(word->private->type, L"*РЅРµ_РІРёР·РЅР°С‡РµРЅРѕ*", wcslen(L"*РЅРµ_РІРёР·РЅР°С‡РµРЅРѕ*"));
+	word->private->type[wcslen(L"*РЅРµ_РІРёР·РЅР°С‡РµРЅРѕ*")] = (void*)0;
+	wmemcpy(word->private->gender, L"*РЅРµ_РІРёР·РЅР°С‡РµРЅРѕ*", wcslen(L"*РЅРµ_РІРёР·РЅР°С‡РµРЅРѕ*"));
+	word->private->gender[wcslen(L"*РЅРµ_РІРёР·РЅР°С‡РµРЅРѕ*")] = (void*)0;
+	wmemcpy(word->private->quantity, L"*РЅРµ_РІРёР·РЅР°С‡РµРЅРѕ*", wcslen(L"*РЅРµ_РІРёР·РЅР°С‡РµРЅРѕ*"));
+	word->private->quantity[wcslen(L"*РЅРµ_РІРёР·РЅР°С‡РµРЅРѕ*")] = (void*)0;
+	wmemcpy(word->private->person, L"*РЅРµ_РІРёР·РЅР°С‡РµРЅРѕ*", wcslen(L"*РЅРµ_РІРёР·РЅР°С‡РµРЅРѕ*"));
+	word->private->person[wcslen(L"*РЅРµ_РІРёР·РЅР°С‡РµРЅРѕ*")] = (void*)0;
+	wmemcpy(word->private->sort, L"*РЅРµ_РІРёР·РЅР°С‡РµРЅРѕ*", wcslen(L"*РЅРµ_РІРёР·РЅР°С‡РµРЅРѕ*"));
+	word->private->sort[wcslen(L"*РЅРµ_РІРёР·РЅР°С‡РµРЅРѕ*")] = (void*)0;
 }
 
 /* TWord destructor */
@@ -259,11 +259,11 @@ void TWord_Delete(TWord* word) {
 	lower case allowed:
 
 	text = any ukrainian word
-	type = {"Іменник", "Дієслово", "Прикметник", "Числівник", "Займенник", "Прислівник"} or {"Ім.", "Дієсл.", "Прикм.", "Числ., "Займ.", "Присл."}
-	gender = {"_", "чоловічий", "жіночий", "середній", "спільний"} or {"_", "чол.", "жін.", "сер.", "спн."}
-	quantity = {"_", "однина", "множина"} or {"_", "од.", "мн."}
+	type = {"Р†РјРµРЅРЅРёРє", "Р”С–С”СЃР»РѕРІРѕ", "РџСЂРёРєРјРµС‚РЅРёРє", "Р§РёСЃР»С–РІРЅРёРє", "Р—Р°Р№РјРµРЅРЅРёРє", "РџСЂРёСЃР»С–РІРЅРёРє"} or {"Р†Рј.", "Р”С–С”СЃР».", "РџСЂРёРєРј.", "Р§РёСЃР»., "Р—Р°Р№Рј.", "РџСЂРёСЃР»."}
+	gender = {"_", "С‡РѕР»РѕРІС–С‡РёР№", "Р¶С–РЅРѕС‡РёР№", "СЃРµСЂРµРґРЅС–Р№", "СЃРїС–Р»СЊРЅРёР№"} or {"_", "С‡РѕР».", "Р¶С–РЅ.", "СЃРµСЂ.", "СЃРїРЅ."}
+	quantity = {"_", "РѕРґРЅРёРЅР°", "РјРЅРѕР¶РёРЅР°"} or {"_", "РѕРґ.", "РјРЅ."}
 	person = {"_", 0, 1, 2, 3}
-	sort = {"_", "Називний", "Родовий", "Давальний", "Знахідний", "Орудний", "Місцевий", "Кличний"} or {"_", "Наз.", "Род.", "Дав.", "Зн.", "Оруд.", "Місц.", "Кл."}
+	sort = {"_", "РќР°Р·РёРІРЅРёР№", "Р РѕРґРѕРІРёР№", "Р”Р°РІР°Р»СЊРЅРёР№", "Р—РЅР°С…С–РґРЅРёР№", "РћСЂСѓРґРЅРёР№", "РњС–СЃС†РµРІРёР№", "РљР»РёС‡РЅРёР№"} or {"_", "РќР°Р·.", "Р РѕРґ.", "Р”Р°РІ.", "Р—РЅ.", "РћСЂСѓРґ.", "РњС–СЃС†.", "РљР»."}
 
 	( 0 and "_" for infinitive or special type of word )
 */
@@ -364,12 +364,12 @@ void OutputWord(TWord* w, FILE* ostream, const char* f_type) {
 			if (w->private->gender[i] == (void*)0) break;
 			fwprintf(ostream, L"%lc", w->private->gender[i]);
 		}
-		fwprintf(ostream, L" роду ");
+		fwprintf(ostream, L" СЂРѕРґСѓ ");
 		for (int i = 0; i < TWordPropFieldLen; i++) {
 			if (w->private->person[i] == (void*)0) break;
 			fwprintf(ostream, L"%lc", w->private->person[i]);
 		}
-		fwprintf(ostream, L"-ої особи ");
+		fwprintf(ostream, L"-РѕС— РѕСЃРѕР±Рё ");
 		for (int i = 0; i < TWordPropFieldLen; i++) {
 			if (w->private->quantity[i] == (void*)0) break;
 			fwprintf(ostream, L"%lc", w->private->quantity[i]);
@@ -379,7 +379,7 @@ void OutputWord(TWord* w, FILE* ostream, const char* f_type) {
 			if (w->private->sort[i] == (void*)0) break;
 			fwprintf(ostream, L"%lc", w->private->sort[i]);
 		}
-		fwprintf(ostream, L" відмінок.");
+		fwprintf(ostream, L" РІС–РґРјС–РЅРѕРє.");
 
 	}
 	else if (f_type == "txt") {
@@ -429,12 +429,12 @@ void OutputWord(TWord* w, FILE* ostream, const char* f_type) {
 
 /* Input word text field:
 	input word text field from console/file/binfile
-	@param[w] - OUT – Word for return
+	@param[w] - OUT вЂ“ Word for return
 	@param[istream] - input stream (stdin, FILE*)
 	@param[f_type] - char string to tell the type of file ("txt" or "bin")
-	@result – int :
+	@result вЂ“ int :
 	0 - in the case of success,
-	error_code – number of error
+	error_code вЂ“ number of error
 */
 int InputWordText(TWord* w, FILE* istream, const char* f_type) {
 
@@ -534,7 +534,7 @@ void SetWordText(TWord* w, wchar_t text) {
 /* Breakdown word */
 void BreakdownWord(TWord* w, SyllsArray* w_syl) {
 
-	wchar_t louds[21] = L"АЕЄИІЇОУЮЯаеєиіїоуюя";
+	wchar_t louds[21] = L"РђР•Р„РР†Р‡РћРЈР®РЇР°РµС”РёС–С—РѕСѓСЋСЏ";
 
 	int louds_c = 0;
 	for (int i = 0; i < wcslen(w->private->text); i++)
@@ -628,7 +628,7 @@ void BreakdownWord(TWord* w, SyllsArray* w_syl) {
 				fwprintf(stdout, L"1?");
 			}
 
-			else if (iswchar_inwcs(w->private->text[i], louds) == 0 && iswchar_inwcs(w->private->text[i + 1], louds) == 1 && iswchar_inwcs(w->private->text[i + 2], L"й") == 1 && iswchar_inwcs(w->private->text[i + 3], L"о") == 1)
+			else if (iswchar_inwcs(w->private->text[i], louds) == 0 && iswchar_inwcs(w->private->text[i + 1], louds) == 1 && iswchar_inwcs(w->private->text[i + 2], L"Р№") == 1 && iswchar_inwcs(w->private->text[i + 3], L"Рѕ") == 1)
 			{
 				w_syl->private->sylls[k][s] = w->private->text[i];
 				w_syl->private->sylls[k][s + 1] = w->private->text[i + 1];
@@ -640,7 +640,7 @@ void BreakdownWord(TWord* w, SyllsArray* w_syl) {
 				fwprintf(stdout, L"2?");
 			}
 			
-			else if (iswchar_inwcs(w->private->text[i], louds) == 0 && iswchar_inwcs(w->private->text[i + 1], louds) == 1 && iswchar_inwcs(w->private->text[i + 2], L"й") == 1)
+			else if (iswchar_inwcs(w->private->text[i], louds) == 0 && iswchar_inwcs(w->private->text[i + 1], louds) == 1 && iswchar_inwcs(w->private->text[i + 2], L"Р№") == 1)
 			{
 				w_syl->private->sylls[k][s] = w->private->text[i];
 				w_syl->private->sylls[k][s + 1] = w->private->text[i + 1];
@@ -654,7 +654,7 @@ void BreakdownWord(TWord* w, SyllsArray* w_syl) {
 				fwprintf(stdout, L"3?");
 			}
 
-			else if (iswchar_inwcs(w->private->text[i], louds) == 0 && iswchar_inwcs(w->private->text[i + 1], L"ь") == 1 && iswchar_inwcs(w->private->text[i + 2], louds) == 1)
+			else if (iswchar_inwcs(w->private->text[i], louds) == 0 && iswchar_inwcs(w->private->text[i + 1], L"СЊ") == 1 && iswchar_inwcs(w->private->text[i + 2], louds) == 1)
 			{
 				w_syl->private->sylls[k][s] = w->private->text[i];
 				w_syl->private->sylls[k][s + 1] = w->private->text[i + 1];
@@ -682,7 +682,7 @@ void BreakdownWord(TWord* w, SyllsArray* w_syl) {
 				fwprintf(stdout, L"5?");
 			}
 
-			else if (iswchar_inwcs(w->private->text[i], louds) == 1 && iswchar_inwcs(w->private->text[i + 1], louds) == 0 && iswchar_inwcs(w->private->text[i + 2], louds) == 0 && iswchar_inwcs(w->private->text[i + 2], L"ь") == 0 && iswchar_inwcs(w->private->text[i + 3], louds) == 1)
+			else if (iswchar_inwcs(w->private->text[i], louds) == 1 && iswchar_inwcs(w->private->text[i + 1], louds) == 0 && iswchar_inwcs(w->private->text[i + 2], louds) == 0 && iswchar_inwcs(w->private->text[i + 2], L"СЊ") == 0 && iswchar_inwcs(w->private->text[i + 3], louds) == 1)
 			{
 				w_syl->private->sylls[k][s] = w->private->text[i];
 				w_syl->private->sylls[k][s + 1] = w->private->text[i + 1];
@@ -694,7 +694,7 @@ void BreakdownWord(TWord* w, SyllsArray* w_syl) {
 				fwprintf(stdout, L"6?");
 			}
 
-			else if (iswchar_inwcs(w->private->text[i], louds) == 1 && iswchar_inwcs(w->private->text[i + 1], louds) == 0 && iswchar_inwcs(w->private->text[i + 2], L"ь") == 1 && iswchar_inwcs(w->private->text[i + 3], louds) == 0 && iswchar_inwcs(w->private->text[i + 4], louds) == 1)
+			else if (iswchar_inwcs(w->private->text[i], louds) == 1 && iswchar_inwcs(w->private->text[i + 1], louds) == 0 && iswchar_inwcs(w->private->text[i + 2], L"СЊ") == 1 && iswchar_inwcs(w->private->text[i + 3], louds) == 0 && iswchar_inwcs(w->private->text[i + 4], louds) == 1)
 			{
 				w_syl->private->sylls[k][s] = w->private->text[i];
 				w_syl->private->sylls[k][s + 1] = w->private->text[i + 1];
@@ -708,7 +708,7 @@ void BreakdownWord(TWord* w, SyllsArray* w_syl) {
 				fwprintf(stdout, L"7?");
 			}
 
-			// + rule for "дз/дж" ?
+			// + rule for "РґР·/РґР¶" ?
 
 			else if (iswchar_inwcs(w->private->text[i], louds) == 1 && w_syl->private->sylls[k][s] != (void*)0 && louds_c != 0)
 			{
