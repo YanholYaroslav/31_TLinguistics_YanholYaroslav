@@ -19,23 +19,26 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\C backup2\BDWR_chars.dat" />
-    <None Include="..\..\C backup2\TLinguistics_test.dat" />
+    <ClInclude Include="TLinguistics.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\C backup2\TLinguistics.c" />
-    <ClCompile Include="..\..\C backup2\TLinguistics_test.c" />
+    <ClCompile Include="TLinguistics.c" />
+    <ClCompile Include="TLinguistics_test.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\C backup2\TLinguistics.h" />
+    <Text Include="Test_Txt_Output.txt" />
+    <Text Include="TLinguistics_test.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="..\..\C backup2\TLinguistics_test.txt" />
+    <None Include="BDWR_chars.dat" />
+    <None Include="louds.dat" />
+    <None Include="Test_Bin_Output.dat" />
+    <None Include="TLinguistics_test.dat" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{b9bd4c3b-6169-4eb9-ba68-db5128ad22e5}</ProjectGuid>
+    <ProjectGuid>{15382ab1-4875-4d46-ac82-4f2c5eab5489}</ProjectGuid>
     <RootNamespace>TLinguisticsC</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>

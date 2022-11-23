@@ -6,10 +6,10 @@
 
 
  *	Taking into account the fact that there is no possibility to implement a class in c,
-    a structure TWord and its heirs structures are used as analogues.
+	a structure TWord and its heirs structures are used as analogues.
 
 
- *	!!!Attention!!! 
+ *	!!!Attention!!!
 
 	The module is designed to work with Ukrainian text.
 	For compatibility with third-party wchar_t type objects connect the appropriate file conversion mode _O_U16TEXT (Unicode) for reading/writing wide-character strings from/to the stream.
@@ -48,7 +48,10 @@
 
 
 
+
+
 /* Helper functions */
+
 
 /* Determine if there is the same wide character in the string
 	@param[c] - character to find
@@ -59,7 +62,7 @@
 */
 extern int iswchar_inwcs(wchar_t c, wchar_t str[]);
 
-/* Determine if wchar_t character is equal to the other wchar_t character 
+/* Determine if wchar_t character is equal to the other wchar_t character
 	@param[c1] - 1st character to compare
 	@param[c2] - 2nd character to compare
 	@result – int :
@@ -95,7 +98,15 @@ typedef struct ending {
 
 
 
+
+
+
+
+
+
+
 /* Base structure of syllables array */
+
 
 // Declaration of private fields
 typedef struct _SyllsArrayPrivate {
@@ -154,9 +165,17 @@ extern void OutputSyllsArray(SyllsArray* sylarr, FILE* ostream, const char* f_ty
 
 
 
-/* Base structure of word */
 
-// Declaration of private fields
+
+
+
+
+
+
+/* Base structure of TWord */
+
+
+// Declaration of TWord private fields
 typedef struct _TWordPrivate {
 
 	wchar_t text[TWordLen];
@@ -173,7 +192,7 @@ typedef struct _TWordPrivate {
 
 } TWordPrivate;
 
-// Declaration of pointer to structure
+// Declaration of pointer to TWord structure
 typedef struct _TWord {
 	TWordPrivate* private;
 } TWord;
@@ -189,7 +208,7 @@ extern void TWord_Constructor(TWord* word);
 extern void TWord_Destructor(TWord* word);
 
 /* Function of creating a new TWord object:
-    create new word
+	create new word
 	@result – TWord*
 */
 extern TWord* TWord_New(void);
@@ -246,14 +265,14 @@ extern void OutputWordText(TWord* w, FILE* ostream, const char* f_type);
 	@param[w] - TWord*
 	@result - wchar_t
 */
-wchar_t GetWordText(TWord* w);
+wchar_t* GetWordText(TWord* w);
 
 /* Set text to TWord field:
 	@param[w] - TWord*
 	@param[text] - wchar_t
 	@result - void
 */
-void SetWordText(TWord* w, wchar_t text);
+void SetWordText(TWord* w, wchar_t* text);
 
 /* Breakdown word:
 	break the word into syllables and put them in array
@@ -309,6 +328,158 @@ extern void SetWordProps(TWord* w, const wchar_t* type, const wchar_t* gender, c
 */
 extern void ChangeWordProps(TWord* w, const wchar_t* quantity, const wchar_t* sort);
 
+
+
+
+
+
+
+
+
+/* Declarations of TWord heirs (TNoun, TVerb, TAdjective, TNumeral, TPronoun, TAdverb) structures. */
+
+
+
+/* Base structure of TNoun */
+
+
+// Declaration of TNoun private fields
+typedef struct _TNounPrivate {
+	unsigned char uch;
+} TNounPrivate;
+
+// Declaration of pointer to TNoun structure
+typedef struct _TNoun {
+	TWord parent;
+	TNounPrivate* private;
+} TNoun;
+
+
+// Declaration of TNoun constructor
+extern void TNoun_Constructor(TNoun* T);
+
+// Declaration of TNoun destructor
+extern void TNoun_Destructor(TNoun* T);
+
+/* Function of creating a new TNoun object:
+	create new noun
+	@result – TNoun*
+*/
+extern TNoun* TNoun_New(void);
+
+/* Function of deleting a TNoun object:
+	delete noun
+	@param[T] - noun to delete
+*/
+extern void TNoun_Delete(TNoun* T);
+
+/* Input noun:
+	input noun from console/file/binfile
+	@param[T] - OUT – noun for return
+	@param[istream] - input stream (stdin, FILE*)
+	@param[f_type] - char string to tell the type of file ("txt" or "bin")
+	@result – int :
+	0 - in the case of success,
+	error_code – number of error
+*/
+extern int InputNoun(TNoun* T, FILE* istream, const char* f_type);
+
+/* Output noun:
+	write noun to console/file/binfile
+	@param[T] - IN noun*
+	@param[ostream] - output stream (stdout, FILE*)
+	@param[f_type] - char string to tell the type of file ("txt" or "bin")
+	@result - void
+*/
+
+extern void OutputNoun(TNoun* T, FILE* ostream, const char* f_type);
+
+/* Input noun text field:
+	input noun  text field from console/file/binfile
+	@param[T] - OUT – noun for return
+	@param[istream] - input stream (stdin, FILE*)
+	@param[f_type] - char string to tell the type of file ("txt" or "bin")
+	@result – int :
+	0 - in the case of success,
+	error_code – number of error
+*/
+extern int InputNounText(TNoun* T, FILE* istream, const char* f_type);
+
+/* Output noun text field:
+	write noun text field to console/file/binfile
+	@param[T] - IN noun*
+	@param[ostream] - output stream (stdout, FILE*)
+	@param[f_type] - char string to tell the type of file ("txt" or "bin")
+	@result - void
+*/
+extern void OutputNounText(TNoun* T, FILE* ostream, const char* f_type);
+
+/* Get text from TNoun field
+	@param[T] - TNoun*
+	@result - wchar_t
+*/
+extern wchar_t GetNounText(TNoun* T);
+
+/* Set text to TNoun field:
+	@param[T] - TNoun*
+	@param[text] - wchar_t
+	@result - void
+*/
+extern void SetNounText(TNoun* T, wchar_t text);
+
+/* Breakdown noun:
+	break the noun into syllables and put them in array
+	@param - IN noun*
+	@result - SyllablesArray*
+*/
+extern void BreakdownNoun(TNoun* T, SyllsArray* sylarr);
+
+/* Combine noun:
+	combine syllables unto a noun
+	@param[in_arr] - IN - SyllablesArray to combine
+	@result – new TNoun*
+*/
+extern TNoun* CombineNoun(SyllsArray* sylarr);
+
+/* Input noun by parts:
+	input noun from console/file/binfile by parts
+	@param[T] - OUT – noun for return
+	@param[istream] - input stream (stdout, FILE*)
+	@param[f_type] - char string to tell the type of file ("txt" or "bin")
+	@result – int :
+	0 - in the case of success,
+	error_code – number of error
+*/
+extern int InputNounByParts(TNoun* T, FILE* istream, const char* f_type);
+
+/* Output noun by parts:
+	write noun to console/file/binfile by parts
+	@param[T] - TNoun
+	@param[ostream] - output stream (stdout, FILE*)
+	@param[f_type] - char string to tell the type of file ("txt" or "bin")
+	@result - void
+*/
+extern void OutputNounByParts(TNoun* T, FILE* ostream, const char* f_type);
+
+/* Set noun properties:
+	Set noun properties like type, gender, quantity and sort
+	@param[T] - OUT - TNoun*
+	@param[type] - const wchar_t* string
+	@param[gender] - const wchar_t* string
+	@param[quantity] - const wchar_t* string
+	@param[sort] - const wchar_t* string
+	@result - void
+*/
+extern void SetNounProps(TNoun* w, const wchar_t* type, const wchar_t* gender, const wchar_t* quantity, const wchar_t* sort);
+
+/* Change noun properties:
+	Change noun properties like quantity and sort
+	@param[T] - OUT - Tnoun*
+	@param[quantity] - const wchar_t* string
+	@param[sort] - const wchar_t* string
+	@result - void
+*/
+extern void ChangeNounProps(TNoun* T, const wchar_t* quantity, const wchar_t* sort);
 
 
 
@@ -388,3 +559,4 @@ extern int InputEnding(TWord* w, const wchar_t* mode);
 	@result - void
 */
 extern void OutputEnding(TWord* w, const wchar_t* mode);
+

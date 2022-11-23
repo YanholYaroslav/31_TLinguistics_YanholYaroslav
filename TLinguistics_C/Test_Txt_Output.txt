@@ -1,0 +1,24 @@
+﻿
+Full word output:
+колодязь Іменник чол. 0 од. називний
+
+Word text field output:
+робота
+
+Second word text field output:
+￷￿￿￿
+
+SyllsArray
+3 Ае ро бус 
+
+CombineWord result:
+Аеробус
+
+Breakdown result:
+4 са дів ни ку 
+
+Full word output after setting properties
+Польовим _ _ 0 _ _
+
+Full word output after changing properties:
+Польовим _ _ 0 _ _

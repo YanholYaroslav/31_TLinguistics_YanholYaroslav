@@ -6,7 +6,7 @@
 
 
  *	Taking into account the fact that there is no possibility to implement a class in c,
-    a structure TWord and its heirs structures are used as analogues.
+	a structure TWord and its heirs structures are used as analogues.
 
 
  *	!!!Attention!!!
@@ -45,7 +45,10 @@
 
 
 
+
+
 /* Helper functions */
+
 
 /* Is there a wchar_t character in the wchar_t string */
 int iswchar_inwcs(wchar_t c, wchar_t str[]) {
@@ -61,7 +64,17 @@ int iswchar_eq(wchar_t c1, wchar_t c2) {
 	return c1 == c2 ? 1 : 0;
 }
 
+
+
+
+
+
+
+
+
+
 /* Functions for the SyllsArray */
+
 
 /* SyllsArray constructor */
 void SyllsArray_Constructor(SyllsArray* sylarr) {
@@ -90,7 +103,7 @@ void SyllsArray_Delete(SyllsArray* sylarr) {
 	free(sylarr);
 }
 
-/* Input SyllsArray: 
+/* Input SyllsArray:
 
 */
 int InputSyllsArray(SyllsArray* sylarr, FILE* istream, const char* f_type) {
@@ -169,7 +182,7 @@ int InputSyllsArray(SyllsArray* sylarr, FILE* istream, const char* f_type) {
 
 	}
 	else return -2;
-	
+
 }
 
 /* Output SyllsArray */
@@ -204,9 +217,9 @@ void OutputSyllsArray(SyllsArray* sylarr, FILE* ostream, const char* f_type) {
 	}
 	else if (f_type == "bin") {
 
-	int size = ftell(ostream);
-	int n = size / sizeof(SyllsArray);
-	fwrite(sylarr, sizeof(SyllsArray), n, ostream);
+		int size = ftell(ostream);
+		int n = size / sizeof(SyllsArray);
+		fwrite(sylarr, sizeof(SyllsArray), n, ostream);
 
 	}
 
@@ -216,7 +229,15 @@ void OutputSyllsArray(SyllsArray* sylarr, FILE* ostream, const char* f_type) {
 
 
 
+
+
+
+
+
+
+
 /* Functions for the TWord */
+
 
 /* TWord constructor */
 void TWord_Constructor(TWord* word) {
@@ -242,10 +263,8 @@ void TWord_Constructor(TWord* word) {
 	}
 	wmemcpy(word->private->radix[0], L"_", wcslen(L"_"));
 	word->private->radix[0][wcslen(L"_")] = (void*)0;
-	for (int i = 1; i < 2; i++) {
-		wmemcpy(word->private->radix[i], L"", wcslen(L""));
-		word->private->radix[i][wcslen(L"")] = (void*)0;
-	}
+	wmemcpy(word->private->radix[1], L"", wcslen(L""));
+	word->private->radix[1][wcslen(L"")] = (void*)0;
 	for (int i = 0; i < 3; i++) {
 		wmemcpy(word->private->suffix[i], L"", wcslen(L""));
 		word->private->suffix[i][wcslen(L"")] = (void*)0;
@@ -349,7 +368,7 @@ int InputWord(TWord* w, FILE* istream, const char* f_type) {
 		return 0;
 
 	}
-	else if (istream == "bin") {
+	else if (f_type == "bin") {
 
 		int size = ftell(istream);
 		int n = size / sizeof(TWord);
@@ -370,8 +389,6 @@ void OutputWord(TWord* w, FILE* ostream, const char* f_type) {
 	int ostream_mode = _setmode(_fileno(ostream), _O_U16TEXT);
 
 	if (ostream == stdout) {
-		
-
 
 		for (int i = 0; i < TWordLen; i++) {
 			if (w->private->text[i] == (void*)0) break;
@@ -443,22 +460,14 @@ void OutputWord(TWord* w, FILE* ostream, const char* f_type) {
 		int size = ftell(ostream);
 		int n = size / sizeof(TWord);
 		fwrite(w, sizeof(TWord), n, ostream);
-		
+
 	}
 
 	_setmode(_fileno(ostream), ostream_mode);
 
 }
 
-/* Input word text field:
-	input word text field from console/file/binfile
-	@param[w] - OUT – Word for return
-	@param[istream] - input stream (stdin, FILE*)
-	@param[f_type] - char string to tell the type of file ("txt" or "bin")
-	@result – int :
-	0 - in the case of success,
-	error_code – number of error
-*/
+/* Input word text field */
 int InputWordText(TWord* w, FILE* istream, const char* f_type) {
 
 	fflush(istream);
@@ -502,13 +511,7 @@ int InputWordText(TWord* w, FILE* istream, const char* f_type) {
 	else return -2;
 }
 
-/* Output word text field:
-	write word text field to console/file/binfile
-	@param[w] - IN word*
-	@param[ostream] - output stream (stdout, FILE*)
-	@param[f_type] - char string to tell the type of file ("txt" or "bin")
-	@result - void
-*/
+/* Output word text field */
 void OutputWordText(TWord* w, FILE* ostream, const char* f_type) {
 
 	fflush(ostream);
@@ -543,12 +546,15 @@ void OutputWordText(TWord* w, FILE* ostream, const char* f_type) {
 }
 
 /* Get text from TWord field */
-wchar_t GetWordText(TWord* w) {
-	return w->private->text;
+wchar_t* GetWordText(TWord* w) {
+	wchar_t* s[TWordLen];
+	wmemcpy(s, w->private->text, wcslen(w->private->text));
+	s[wcslen(w->private->text)] = (void*)0;
+	return s;
 }
 
 /* Set text to TWord field */
-void SetWordText(TWord* w, wchar_t text) {
+void SetWordText(TWord* w, wchar_t* text) {
 	wmemcpy(w->private->text, text, wcslen(text));
 	w->private->text[wcslen(text)] = (void*)0;
 }
@@ -575,7 +581,7 @@ void BreakdownWord(TWord* w, SyllsArray* w_syl) {
 		if (iswchar_inwcs(w->private->text[i], louds)) louds_c++;
 	}
 	w_syl->private->n = louds_c;
-	
+
 	if (louds_c == 1) wcscpy(w_syl->private->sylls[0], w->private->text);
 	else
 	{
@@ -597,7 +603,7 @@ void BreakdownWord(TWord* w, SyllsArray* w_syl) {
 			}
 
 			else if (i + 4 > wcslen(w->private->text))
-			{	
+			{
 				if (louds_c <= 1)
 				{
 					while (w->private->text[i] != (void*)0)
@@ -662,7 +668,7 @@ void BreakdownWord(TWord* w, SyllsArray* w_syl) {
 				i++;
 				s = 0;
 			}
-			
+
 			else if (iswchar_inwcs(w->private->text[i], louds) == 0 && iswchar_inwcs(w->private->text[i + 1], louds) == 1 && iswchar_eq(w->private->text[i + 2], bdwr_ch[0]) == 1)
 			{
 				w_syl->private->sylls[k][s] = w->private->text[i];
@@ -768,7 +774,7 @@ int InputWordByParts(TWord* w, FILE* istream, const char* f_type) {
 
 	fflush(istream);
 	int istream_mode = _setmode(_fileno(istream), _O_U16TEXT);
-	
+
 	if (istream == stdin) {
 
 		fflush(stdout);
@@ -780,7 +786,7 @@ int InputWordByParts(TWord* w, FILE* istream, const char* f_type) {
 		fwprintf(stdout, L"Put in amount of prefixes (0 <= n <= 3): ");
 		r_s = fwscanf(istream, L"%d", &n);
 		if (!r_s) return r_s;
-		if( (n < 0) || (n > 3) ) {
+		if ((n < 0) || (n > 3)) {
 			fwprintf(stdout, L"\nWrong amount %d: ", n);
 			return -1;
 		}
@@ -942,7 +948,7 @@ void OutputWordByParts(TWord* w, FILE* ostream, const char* f_type) {
 
 	fflush(ostream);
 	int ostream_mode = _setmode(_fileno(ostream), _O_U16TEXT);
-	
+
 	if (ostream == stdout) {
 
 		int n = 0;
@@ -1051,35 +1057,31 @@ void OutputWordByParts(TWord* w, FILE* ostream, const char* f_type) {
 
 	}
 	else if (f_type == "bin") {
-		
-	int m, size, n;
 
-	/*
-	size = ftell(istream);
-	n = size / sizeof(int);
-	fread(m, sizeof(int), n, istream);
-	*/
-	size = ftell(ostream);
-	n = size / sizeof(w->private->prefix);
-	fwrite(w, sizeof(w->private->prefix), n, ostream);
+		int m, size, n;
 
-	size = ftell(ostream);
-	n = size / sizeof(w->private->radix);
-	fwrite(w, sizeof(w->private->radix), n, ostream);
+		size = ftell(ostream);
+		n = size / sizeof(w->private->prefix);
+		fwrite(w, sizeof(w->private->prefix), n, ostream);
 
-	size = ftell(ostream);
-	n = size / sizeof(w->private->suffix);
-	fwrite(w, sizeof(w->private->suffix), n, ostream);
+		size = ftell(ostream);
+		n = size / sizeof(w->private->radix);
+		fwrite(w, sizeof(w->private->radix), n, ostream);
 
-	size = ftell(ostream);
-	n = size / sizeof(w->private->ending);
-	fwrite(w, sizeof(w->private->ending), n, ostream);
+		size = ftell(ostream);
+		n = size / sizeof(w->private->suffix);
+		fwrite(w, sizeof(w->private->suffix), n, ostream);
+
+		size = ftell(ostream);
+		n = size / sizeof(w->private->ending);
+		fwrite(w, sizeof(w->private->ending), n, ostream);
 
 	}
 
 	_setmode(_fileno(ostream), ostream_mode);
 
 }
+
 
 /* Set word properties */
 void SetWordProps(TWord* w, const wchar_t* type, const wchar_t* gender, const wchar_t* quantity, const wchar_t* sort) {
@@ -1094,3 +1096,19 @@ void ChangeWordProps(TWord* w, const wchar_t* quantity, const wchar_t* sort) {
 	wmemcpy(w->private->quantity, quantity, wcslen(quantity));
 	wmemcpy(w->private->sort, sort, wcslen(sort));
 }
+
+
+
+
+
+
+
+
+
+
+/* Functions for TNoun */
+
+
+//
+
+
