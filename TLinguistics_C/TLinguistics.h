@@ -21,7 +21,7 @@
 	fflush(stdin);
 	_setmode(_fileno(stdin), _O_U16TEXT);
 
-	and adding "ccs=UTF-16LE" or "ccs=UTF-8" to file opening mode parametres for FILE* streams.
+	and adding "ccs=UTF-16LE" to file opening mode parametres for FILE* streams.
 
 
 
@@ -70,31 +70,6 @@ extern int iswchar_inwcs(wchar_t c, wchar_t str[]);
 	0 - if not equal
 */
 extern int iswchar_eq(wchar_t c1, wchar_t c2);
-
-
-
-/* Base structures of TWord fields */
-/*
-// prefix field
-typedef struct prefix {
-	wchar_t prefixes[3][15];
-} Prefix;
-
-// radix field
-typedef struct radix {
-	wchar_t radixes[2][15];
-} Radix;
-
-// suffix field
-typedef struct suffix {
-	wchar_t suffixes[3][15];
-} Suffix;
-
-// ending field
-typedef struct ending {
-	wchar_t endings[1][10];
-} Ending;
-*/
 
 
 
@@ -263,16 +238,16 @@ extern void OutputWordText(TWord* w, FILE* ostream, const char* f_type);
 
 /* Get text from TWord field
 	@param[w] - TWord*
-	@result - wchar_t
+	@result - wchar_t* array
 */
-wchar_t* GetWordText(TWord* w);
+extern void GetWordText(TWord* w, wchar_t* text[]);
 
 /* Set text to TWord field:
 	@param[w] - TWord*
-	@param[text] - wchar_t
+	@param[text] - wchar_t* array
 	@result - void
 */
-void SetWordText(TWord* w, wchar_t* text);
+extern void SetWordText(TWord* w, wchar_t* text[]);
 
 /* Breakdown word:
 	break the word into syllables and put them in array
@@ -416,16 +391,16 @@ extern void OutputNounText(TNoun* T, FILE* ostream, const char* f_type);
 
 /* Get text from TNoun field
 	@param[T] - TNoun*
-	@result - wchar_t
+	@param[text] - OUT - wchar_t* text
 */
-extern wchar_t GetNounText(TNoun* T);
+extern void GetNounText(TWord* w, wchar_t* text[]);
 
 /* Set text to TNoun field:
 	@param[T] - TNoun*
 	@param[text] - wchar_t
 	@result - void
 */
-extern void SetNounText(TNoun* T, wchar_t text);
+extern void SetNounText(TNoun* T, wchar_t* text[]);
 
 /* Breakdown noun:
 	break the noun into syllables and put them in array
@@ -470,7 +445,7 @@ extern void OutputNounByParts(TNoun* T, FILE* ostream, const char* f_type);
 	@param[sort] - const wchar_t* string
 	@result - void
 */
-extern void SetNounProps(TNoun* w, const wchar_t* type, const wchar_t* gender, const wchar_t* quantity, const wchar_t* sort);
+extern void SetNounProps(TNoun* w, wchar_t type[], wchar_t gender[], wchar_t quantity[], wchar_t sort[]);
 
 /* Change noun properties:
 	Change noun properties like quantity and sort
@@ -479,84 +454,749 @@ extern void SetNounProps(TNoun* w, const wchar_t* type, const wchar_t* gender, c
 	@param[sort] - const wchar_t* string
 	@result - void
 */
-extern void ChangeNounProps(TNoun* T, const wchar_t* quantity, const wchar_t* sort);
+extern void ChangeNounProps(TNoun* T, wchar_t quantity[], wchar_t sort[]);
 
 
 
 
 
 
-/* Functions for the TWord fields */
 
-/* Input prefix:
-	input prefix from console/file/binfile
-	@param[w] - OUT – Word for return
-	@param[mode] - input mode ("c" - console, "f" - file, "b" - binary file)
+
+
+/* Base structure of TAdjective */
+
+
+// Declaration of TAdjective private fields
+typedef struct _TAdjectivePrivate {
+	unsigned char uch;
+} TAdjectivePrivate;
+
+// Declaration of pointer to TAdjective structure
+typedef struct _TAdjective {
+	TWord parent;
+	TAdjectivePrivate* private;
+} TAdjective;
+
+
+// Declaration of TAdjective constructor
+extern void TAdjective_Constructor(TAdjective* T);
+
+// Declaration of TAdjective destructor
+extern void TAdjective_Destructor(TAdjective* T);
+
+/* Function of creating a new TAdjective object:
+	create new Adjective
+	@result – TAdjective*
+*/
+extern TAdjective* TAdjective_New(void);
+
+/* Function of deleting a TAdjective object:
+	delete Adjective
+	@param[T] - Adjective to delete
+*/
+extern void TAdjective_Delete(TAdjective* T);
+
+/* Input Adjective:
+	input Adjective from console/file/binfile
+	@param[T] - OUT – Adjective for return
+	@param[istream] - input stream (stdin, FILE*)
+	@param[f_type] - char string to tell the type of file ("txt" or "bin")
 	@result – int :
 	0 - in the case of success,
 	error_code – number of error
 */
-extern int InputPrefix(TWord* w, const wchar_t* mode);
+extern int InputAdjective(TAdjective* T, FILE* istream, const char* f_type);
 
-/* Output prefix:
-	write prefix to console/file/binfile
-	@param[w] - IN word
-	@param[mode] - output mode ("c" - console, "f" - file, "b" - binary file)
+/* Output Adjective:
+	write Adjective to console/file/binfile
+	@param[T] - IN Adjective*
+	@param[ostream] - output stream (stdout, FILE*)
+	@param[f_type] - char string to tell the type of file ("txt" or "bin")
 	@result - void
 */
-extern void OutputPrefix(TWord* w, const wchar_t* mode);
 
-/* Input radix:
-	input radix from console/file/binfile
-	@param[w] - OUT – Word for return
-	@param[mode] - input mode ("c" - console, "f" - file, "b" - binary file)
+extern void OutputAdjective(TAdjective* T, FILE* ostream, const char* f_type);
+
+/* Input Adjective text field:
+	input Adjective  text field from console/file/binfile
+	@param[T] - OUT – Adjective for return
+	@param[istream] - input stream (stdin, FILE*)
+	@param[f_type] - char string to tell the type of file ("txt" or "bin")
 	@result – int :
 	0 - in the case of success,
 	error_code – number of error
 */
-extern int InputRadix(TWord* w, const wchar_t* mode);
+extern int InputAdjectiveText(TAdjective* T, FILE* istream, const char* f_type);
 
-/* Output radix:
-	write radix to console/file/binfile
-	@param[w] - IN word
-	@param[mode] - output mode ("c" - console, "f" - file, "b" - binary file)
+/* Output Adjective text field:
+	write Adjective text field to console/file/binfile
+	@param[T] - IN Adjective*
+	@param[ostream] - output stream (stdout, FILE*)
+	@param[f_type] - char string to tell the type of file ("txt" or "bin")
 	@result - void
 */
-extern void OutputRadix(TWord* w, const wchar_t* mode);
+extern void OutputAdjectiveText(TAdjective* T, FILE* ostream, const char* f_type);
 
-/* Input suffix:
-	input suffix from console/file/binfile
-	@param[w] - OUT – Word for return
-	@param[mode] - input mode ("c" - console, "f" - file, "b" - binary file)
+/* Get text from TAdjective field
+	@param[T] - TAdjective*
+	@param[text] - OUT - wchar_t* text
+*/
+extern void GetAdjectiveText(TWord* w, wchar_t* text[]);
+
+/* Set text to TAdjective field:
+	@param[T] - TAdjective*
+	@param[text] - wchar_t
+	@result - void
+*/
+extern void SetAdjectiveText(TAdjective* T, wchar_t* text[]);
+
+/* Breakdown Adjective:
+	break the Adjective into syllables and put them in array
+	@param - IN Adjective*
+	@result - SyllablesArray*
+*/
+extern void BreakdownAdjective(TAdjective* T, SyllsArray* sylarr);
+
+/* Combine Adjective:
+	combine syllables unto a Adjective
+	@param[in_arr] - IN - SyllablesArray to combine
+	@result – new TAdjective*
+*/
+extern TAdjective* CombineAdjective(SyllsArray* sylarr);
+
+/* Input Adjective by parts:
+	input Adjective from console/file/binfile by parts
+	@param[T] - OUT – Adjective for return
+	@param[istream] - input stream (stdout, FILE*)
+	@param[f_type] - char string to tell the type of file ("txt" or "bin")
 	@result – int :
 	0 - in the case of success,
 	error_code – number of error
 */
-extern int InputSuffix(TWord* w, const wchar_t* mode);
+extern int InputAdjectiveByParts(TAdjective* T, FILE* istream, const char* f_type);
 
-/* Output suffix:
-	write suffix to console/file/binfile
-	@param[w] - IN word
-	@param[mode] - output mode ("c" - console, "f" - file, "b" - binary file)
+/* Output Adjective by parts:
+	write Adjective to console/file/binfile by parts
+	@param[T] - TAdjective
+	@param[ostream] - output stream (stdout, FILE*)
+	@param[f_type] - char string to tell the type of file ("txt" or "bin")
 	@result - void
 */
-extern void OutputSuffix(TWord* w, const wchar_t* mode);
+extern void OutputAdjectiveByParts(TAdjective* T, FILE* ostream, const char* f_type);
 
-/* Input ending:
-	input ending from console/file/binfile
-	@param[w] - OUT – Word for return
-	@param[mode] - input mode ("c" - console, "f" - file, "b" - binary file)
+/* Set Adjective properties:
+	Set Adjective properties like type, gender, quantity and sort
+	@param[T] - OUT - TAdjective*
+	@param[type] - const wchar_t* string
+	@param[gender] - const wchar_t* string
+	@param[quantity] - const wchar_t* string
+	@param[sort] - const wchar_t* string
+	@result - void
+*/
+extern void SetAdjectiveProps(TAdjective* w, wchar_t type[], wchar_t gender[], wchar_t quantity[], wchar_t sort[]);
+
+/* Change Adjective properties:
+	Change Adjective properties like quantity and sort
+	@param[T] - OUT - TAdjective*
+	@param[quantity] - const wchar_t* string
+	@param[sort] - const wchar_t* string
+	@result - void
+*/
+extern void ChangeAdjectiveProps(TAdjective* T, wchar_t quantity[], wchar_t sort[]);
+
+
+
+
+
+
+
+
+
+/* Base structure of TNumeral */
+
+
+// Declaration of TNumeral private fields
+typedef struct _TNumeralPrivate {
+	unsigned char uch;
+} TNumeralPrivate;
+
+// Declaration of pointer to TNumeral structure
+typedef struct _TNumeral {
+	TWord parent;
+	TNumeralPrivate* private;
+} TNumeral;
+
+
+// Declaration of TNumeral constructor
+extern void TNumeral_Constructor(TNumeral* T);
+
+// Declaration of TNumeral destructor
+extern void TNumeral_Destructor(TNumeral* T);
+
+/* Function of creating a new TNumeral object:
+	create new Numeral
+	@result – TNumeral*
+*/
+extern TNumeral* TNumeral_New(void);
+
+/* Function of deleting a TNumeral object:
+	delete Numeral
+	@param[T] - Numeral to delete
+*/
+extern void TNumeral_Delete(TNumeral* T);
+
+/* Input Numeral:
+	input Numeral from console/file/binfile
+	@param[T] - OUT – Numeral for return
+	@param[istream] - input stream (stdin, FILE*)
+	@param[f_type] - char string to tell the type of file ("txt" or "bin")
 	@result – int :
 	0 - in the case of success,
 	error_code – number of error
 */
-extern int InputEnding(TWord* w, const wchar_t* mode);
+extern int InputNumeral(TNumeral* T, FILE* istream, const char* f_type);
 
-/* Output ending:
-	write ending to console/file/binfile
-	@param[w] - IN word
-	@param[mode] - output mode ("c" - console, "f" - file, "b" - binary file)
+/* Output Numeral:
+	write Numeral to console/file/binfile
+	@param[T] - IN Numeral*
+	@param[ostream] - output stream (stdout, FILE*)
+	@param[f_type] - char string to tell the type of file ("txt" or "bin")
 	@result - void
 */
-extern void OutputEnding(TWord* w, const wchar_t* mode);
 
+extern void OutputNumeral(TNumeral* T, FILE* ostream, const char* f_type);
+
+/* Input Numeral text field:
+	input Numeral  text field from console/file/binfile
+	@param[T] - OUT – Numeral for return
+	@param[istream] - input stream (stdin, FILE*)
+	@param[f_type] - char string to tell the type of file ("txt" or "bin")
+	@result – int :
+	0 - in the case of success,
+	error_code – number of error
+*/
+extern int InputNumeralText(TNumeral* T, FILE* istream, const char* f_type);
+
+/* Output Numeral text field:
+	write Numeral text field to console/file/binfile
+	@param[T] - IN Numeral*
+	@param[ostream] - output stream (stdout, FILE*)
+	@param[f_type] - char string to tell the type of file ("txt" or "bin")
+	@result - void
+*/
+extern void OutputNumeralText(TNumeral* T, FILE* ostream, const char* f_type);
+
+/* Get text from TNumeral field
+	@param[T] - TNumeral*
+	@param[text] - OUT - wchar_t* text
+*/
+extern void GetNumeralText(TWord* w, wchar_t* text[]);
+
+/* Set text to TNumeral field:
+	@param[T] - TNumeral*
+	@param[text] - wchar_t
+	@result - void
+*/
+extern void SetNumeralText(TNumeral* T, wchar_t* text[]);
+
+/* Breakdown Numeral:
+	break the Numeral into syllables and put them in array
+	@param - IN Numeral*
+	@result - SyllablesArray*
+*/
+extern void BreakdownNumeral(TNumeral* T, SyllsArray* sylarr);
+
+/* Combine Numeral:
+	combine syllables unto a Numeral
+	@param[in_arr] - IN - SyllablesArray to combine
+	@result – new TNumeral*
+*/
+extern TNumeral* CombineNumeral(SyllsArray* sylarr);
+
+/* Input Numeral by parts:
+	input Numeral from console/file/binfile by parts
+	@param[T] - OUT – Numeral for return
+	@param[istream] - input stream (stdout, FILE*)
+	@param[f_type] - char string to tell the type of file ("txt" or "bin")
+	@result – int :
+	0 - in the case of success,
+	error_code – number of error
+*/
+extern int InputNumeralByParts(TNumeral* T, FILE* istream, const char* f_type);
+
+/* Output Numeral by parts:
+	write Numeral to console/file/binfile by parts
+	@param[T] - TNumeral
+	@param[ostream] - output stream (stdout, FILE*)
+	@param[f_type] - char string to tell the type of file ("txt" or "bin")
+	@result - void
+*/
+extern void OutputNumeralByParts(TNumeral* T, FILE* ostream, const char* f_type);
+
+/* Set Numeral properties:
+	Set Numeral properties like type, gender, quantity and sort
+	@param[T] - OUT - TNumeral*
+	@param[type] - const wchar_t* string
+	@param[gender] - const wchar_t* string
+	@param[quantity] - const wchar_t* string
+	@param[sort] - const wchar_t* string
+	@result - void
+*/
+extern void SetNumeralProps(TNumeral* w, wchar_t type[], wchar_t gender[], wchar_t quantity[], wchar_t sort[]);
+
+/* Change Numeral properties:
+	Change Numeral properties like quantity and sort
+	@param[T] - OUT - TNumeral*
+	@param[quantity] - const wchar_t* string
+	@param[sort] - const wchar_t* string
+	@result - void
+*/
+extern void ChangeNumeralProps(TNumeral* T, wchar_t quantity[], wchar_t sort[]);
+
+
+
+
+
+
+
+
+
+/* Base structure of TPronoun */
+
+
+// Declaration of TPronoun private fields
+typedef struct _TPronounPrivate {
+	unsigned char uch;
+} TPronounPrivate;
+
+// Declaration of pointer to TPronoun structure
+typedef struct _TPronoun {
+	TWord parent;
+	TPronounPrivate* private;
+} TPronoun;
+
+
+// Declaration of TPronoun constructor
+extern void TPronoun_Constructor(TPronoun* T);
+
+// Declaration of TPronoun destructor
+extern void TPronoun_Destructor(TPronoun* T);
+
+/* Function of creating a new TPronoun object:
+	create new Pronoun
+	@result – TPronoun*
+*/
+extern TPronoun* TPronoun_New(void);
+
+/* Function of deleting a TPronoun object:
+	delete Pronoun
+	@param[T] - Pronoun to delete
+*/
+extern void TPronoun_Delete(TPronoun* T);
+
+/* Input Pronoun:
+	input Pronoun from console/file/binfile
+	@param[T] - OUT – Pronoun for return
+	@param[istream] - input stream (stdin, FILE*)
+	@param[f_type] - char string to tell the type of file ("txt" or "bin")
+	@result – int :
+	0 - in the case of success,
+	error_code – number of error
+*/
+extern int InputPronoun(TPronoun* T, FILE* istream, const char* f_type);
+
+/* Output Pronoun:
+	write Pronoun to console/file/binfile
+	@param[T] - IN Pronoun*
+	@param[ostream] - output stream (stdout, FILE*)
+	@param[f_type] - char string to tell the type of file ("txt" or "bin")
+	@result - void
+*/
+
+extern void OutputPronoun(TPronoun* T, FILE* ostream, const char* f_type);
+
+/* Input Pronoun text field:
+	input Pronoun  text field from console/file/binfile
+	@param[T] - OUT – Pronoun for return
+	@param[istream] - input stream (stdin, FILE*)
+	@param[f_type] - char string to tell the type of file ("txt" or "bin")
+	@result – int :
+	0 - in the case of success,
+	error_code – number of error
+*/
+extern int InputPronounText(TPronoun* T, FILE* istream, const char* f_type);
+
+/* Output Pronoun text field:
+	write Pronoun text field to console/file/binfile
+	@param[T] - IN Pronoun*
+	@param[ostream] - output stream (stdout, FILE*)
+	@param[f_type] - char string to tell the type of file ("txt" or "bin")
+	@result - void
+*/
+extern void OutputPronounText(TPronoun* T, FILE* ostream, const char* f_type);
+
+/* Get text from TPronoun field
+	@param[T] - TPronoun*
+	@param[text] - OUT - wchar_t* text
+*/
+extern void GetPronounText(TWord* w, wchar_t* text[]);
+
+/* Set text to TPronoun field:
+	@param[T] - TPronoun*
+	@param[text] - wchar_t
+	@result - void
+*/
+extern void SetPronounText(TPronoun* T, wchar_t* text[]);
+
+/* Breakdown Pronoun:
+	break the Pronoun into syllables and put them in array
+	@param - IN Pronoun*
+	@result - SyllablesArray*
+*/
+extern void BreakdownPronoun(TPronoun* T, SyllsArray* sylarr);
+
+/* Combine Pronoun:
+	combine syllables unto a Pronoun
+	@param[in_arr] - IN - SyllablesArray to combine
+	@result – new TPronoun*
+*/
+extern TPronoun* CombinePronoun(SyllsArray* sylarr);
+
+/* Input Pronoun by parts:
+	input Pronoun from console/file/binfile by parts
+	@param[T] - OUT – Pronoun for return
+	@param[istream] - input stream (stdout, FILE*)
+	@param[f_type] - char string to tell the type of file ("txt" or "bin")
+	@result – int :
+	0 - in the case of success,
+	error_code – number of error
+*/
+extern int InputPronounByParts(TPronoun* T, FILE* istream, const char* f_type);
+
+/* Output Pronoun by parts:
+	write Pronoun to console/file/binfile by parts
+	@param[T] - TPronoun
+	@param[ostream] - output stream (stdout, FILE*)
+	@param[f_type] - char string to tell the type of file ("txt" or "bin")
+	@result - void
+*/
+extern void OutputPronounByParts(TPronoun* T, FILE* ostream, const char* f_type);
+
+/* Set Pronoun properties:
+	Set Pronoun properties like type, gender, quantity and sort
+	@param[T] - OUT - TPronoun*
+	@param[type] - const wchar_t* string
+	@param[gender] - const wchar_t* string
+	@param[quantity] - const wchar_t* string
+	@param[sort] - const wchar_t* string
+	@result - void
+*/
+extern void SetPronounProps(TPronoun* w, wchar_t type[], wchar_t gender[], wchar_t quantity[], wchar_t sort[]);
+
+/* Change Pronoun properties:
+	Change Pronoun properties like quantity and sort
+	@param[T] - OUT - TPronoun*
+	@param[quantity] - const wchar_t* string
+	@param[sort] - const wchar_t* string
+	@result - void
+*/
+extern void ChangePronounProps(TPronoun* T, wchar_t quantity[], wchar_t sort[]);
+
+
+
+
+
+
+
+
+
+/* Base structure of TAdverb */
+
+
+// Declaration of TAdverb private fields
+typedef struct _TAdverbPrivate {
+	unsigned char uch;
+} TAdverbPrivate;
+
+// Declaration of pointer to TAdverb structure
+typedef struct _TAdverb {
+	TWord parent;
+	TAdverbPrivate* private;
+} TAdverb;
+
+
+// Declaration of TAdverb constructor
+extern void TAdverb_Constructor(TAdverb* T);
+
+// Declaration of TAdverb destructor
+extern void TAdverb_Destructor(TAdverb* T);
+
+/* Function of creating a new TAdverb object:
+	create new Adverb
+	@result – TAdverb*
+*/
+extern TAdverb* TAdverb_New(void);
+
+/* Function of deleting a TAdverb object:
+	delete Adverb
+	@param[T] - Adverb to delete
+*/
+extern void TAdverb_Delete(TAdverb* T);
+
+/* Input Adverb:
+	input Adverb from console/file/binfile
+	@param[T] - OUT – Adverb for return
+	@param[istream] - input stream (stdin, FILE*)
+	@param[f_type] - char string to tell the type of file ("txt" or "bin")
+	@result – int :
+	0 - in the case of success,
+	error_code – number of error
+*/
+extern int InputAdverb(TAdverb* T, FILE* istream, const char* f_type);
+
+/* Output Adverb:
+	write Adverb to console/file/binfile
+	@param[T] - IN Adverb*
+	@param[ostream] - output stream (stdout, FILE*)
+	@param[f_type] - char string to tell the type of file ("txt" or "bin")
+	@result - void
+*/
+
+extern void OutputAdverb(TAdverb* T, FILE* ostream, const char* f_type);
+
+/* Input Adverb text field:
+	input Adverb  text field from console/file/binfile
+	@param[T] - OUT – Adverb for return
+	@param[istream] - input stream (stdin, FILE*)
+	@param[f_type] - char string to tell the type of file ("txt" or "bin")
+	@result – int :
+	0 - in the case of success,
+	error_code – number of error
+*/
+extern int InputAdverbText(TAdverb* T, FILE* istream, const char* f_type);
+
+/* Output Adverb text field:
+	write Adverb text field to console/file/binfile
+	@param[T] - IN Adverb*
+	@param[ostream] - output stream (stdout, FILE*)
+	@param[f_type] - char string to tell the type of file ("txt" or "bin")
+	@result - void
+*/
+extern void OutputAdverbText(TAdverb* T, FILE* ostream, const char* f_type);
+
+/* Get text from TAdverb field
+	@param[T] - TAdverb*
+	@param[text] - OUT - wchar_t* text
+*/
+extern void GetAdverbText(TWord* w, wchar_t* text[]);
+
+/* Set text to TAdverb field:
+	@param[T] - TAdverb*
+	@param[text] - wchar_t
+	@result - void
+*/
+extern void SetAdverbText(TAdverb* T, wchar_t* text[]);
+
+/* Breakdown Adverb:
+	break the Adverb into syllables and put them in array
+	@param - IN Adverb*
+	@result - SyllablesArray*
+*/
+extern void BreakdownAdverb(TAdverb* T, SyllsArray* sylarr);
+
+/* Combine Adverb:
+	combine syllables unto a Adverb
+	@param[in_arr] - IN - SyllablesArray to combine
+	@result – new TAdverb*
+*/
+extern TAdverb* CombineAdverb(SyllsArray* sylarr);
+
+/* Input Adverb by parts:
+	input Adverb from console/file/binfile by parts
+	@param[T] - OUT – Adverb for return
+	@param[istream] - input stream (stdout, FILE*)
+	@param[f_type] - char string to tell the type of file ("txt" or "bin")
+	@result – int :
+	0 - in the case of success,
+	error_code – number of error
+*/
+extern int InputAdverbByParts(TAdverb* T, FILE* istream, const char* f_type);
+
+/* Output Adverb by parts:
+	write Adverb to console/file/binfile by parts
+	@param[T] - TAdverb
+	@param[ostream] - output stream (stdout, FILE*)
+	@param[f_type] - char string to tell the type of file ("txt" or "bin")
+	@result - void
+*/
+extern void OutputAdverbByParts(TAdverb* T, FILE* ostream, const char* f_type);
+
+/* Set Adverb properties:
+	Set Adverb properties like type, gender, quantity and sort
+	@param[T] - OUT - TAdverb*
+	@param[type] - const wchar_t* string
+	@param[gender] - const wchar_t* string
+	@param[quantity] - const wchar_t* string
+	@param[sort] - const wchar_t* string
+	@result - void
+*/
+extern void SetAdverbProps(TAdverb* w, wchar_t type[], wchar_t gender[], wchar_t quantity[], wchar_t sort[]);
+
+/* Change Adverb properties:
+	Change Adverb properties like quantity and sort
+	@param[T] - OUT - TAdverb*
+	@param[quantity] - const wchar_t* string
+	@param[sort] - const wchar_t* string
+	@result - void
+*/
+extern void ChangeAdverbProps(TAdverb* T, wchar_t quantity[], wchar_t sort[]);
+
+
+
+
+
+
+
+
+
+/* Base structure of TVerb */
+
+
+// Declaration of TVerb private fields
+typedef struct _TVerbPrivate {
+	unsigned char uch;
+} TVerbPrivate;
+
+// Declaration of pointer to TVerb structure
+typedef struct _TVerb {
+	TWord parent;
+	TVerbPrivate* private;
+} TVerb;
+
+
+// Declaration of TVerb constructor
+extern void TVerb_Constructor(TVerb* T);
+
+// Declaration of TVerb destructor
+extern void TVerb_Destructor(TVerb* T);
+
+/* Function of creating a new TVerb object:
+	create new verb
+	@result – TVerb*
+*/
+extern TVerb* TVerb_New(void);
+
+/* Function of deleting a TVerb object:
+	delete verb
+	@param[T] - verb to delete
+*/
+extern void TVerb_Delete(TVerb* T);
+
+/* Input verb:
+	input verb from console/file/binfile
+	@param[T] - OUT – verb for return
+	@param[istream] - input stream (stdin, FILE*)
+	@param[f_type] - char string to tell the type of file ("txt" or "bin")
+	@result – int :
+	0 - in the case of success,
+	error_code – number of error
+*/
+extern int InputVerb(TVerb* T, FILE* istream, const char* f_type);
+
+/* Output verb:
+	write verb to console/file/binfile
+	@param[T] - IN verb*
+	@param[ostream] - output stream (stdout, FILE*)
+	@param[f_type] - char string to tell the type of file ("txt" or "bin")
+	@result - void
+*/
+
+extern void OutputVerb(TVerb* T, FILE* ostream, const char* f_type);
+
+/* Input verb text field:
+	input verb  text field from console/file/binfile
+	@param[T] - OUT – verb for return
+	@param[istream] - input stream (stdin, FILE*)
+	@param[f_type] - char string to tell the type of file ("txt" or "bin")
+	@result – int :
+	0 - in the case of success,
+	error_code – number of error
+*/
+extern int InputVerbText(TVerb* T, FILE* istream, const char* f_type);
+
+/* Output verb text field:
+	write verb text field to console/file/binfile
+	@param[T] - IN verb*
+	@param[ostream] - output stream (stdout, FILE*)
+	@param[f_type] - char string to tell the type of file ("txt" or "bin")
+	@result - void
+*/
+extern void OutputVerbText(TVerb* T, FILE* ostream, const char* f_type);
+
+/* Get text from TVerb field
+	@param[T] - TVerb*
+	@param[text] - OUT - wchar_t* text
+*/
+extern void GetVerbText(TWord* w, wchar_t* text[]);
+
+/* Set text to TVerb field:
+	@param[T] - TVerb*
+	@param[text] - wchar_t
+	@result - void
+*/
+extern void SetVerbText(TVerb* T, wchar_t* text[]);
+
+/* Breakdown verb:
+	break the verb into syllables and put them in array
+	@param - IN verb*
+	@result - SyllablesArray*
+*/
+extern void BreakdownVerb(TVerb* T, SyllsArray* sylarr);
+
+/* Combine verb:
+	combine syllables unto a verb
+	@param[in_arr] - IN - SyllablesArray to combine
+	@result – new TVerb*
+*/
+extern TVerb* CombineVerb(SyllsArray* sylarr);
+
+/* Input verb by parts:
+	input verb from console/file/binfile by parts
+	@param[T] - OUT – verb for return
+	@param[istream] - input stream (stdout, FILE*)
+	@param[f_type] - char string to tell the type of file ("txt" or "bin")
+	@result – int :
+	0 - in the case of success,
+	error_code – number of error
+*/
+extern int InputVerbByParts(TVerb* T, FILE* istream, const char* f_type);
+
+/* Output verb by parts:
+	write verb to console/file/binfile by parts
+	@param[T] - TVerb
+	@param[ostream] - output stream (stdout, FILE*)
+	@param[f_type] - char string to tell the type of file ("txt" or "bin")
+	@result - void
+*/
+extern void OutputVerbByParts(TVerb* T, FILE* ostream, const char* f_type);
+
+/* Set verb properties:
+	Set verb properties like type, gender, quantity and sort
+	@param[T] - OUT - TVerb*
+	@param[type] - const wchar_t* string
+	@param[gender] - const wchar_t* string
+	@param[quantity] - const wchar_t* string
+	@param[sort] - const wchar_t* string
+	@result - void
+*/
+extern void SetVerbProps(TVerb* w, wchar_t type[], wchar_t gender[], wchar_t quantity[], wchar_t sort[]);
+
+/* Change verb properties:
+	Change verb properties like quantity and sort
+	@param[T] - OUT - TVerb*
+	@param[quantity] - const wchar_t* string
+	@param[sort] - const wchar_t* string
+	@result - void
+*/
+extern void ChangeVerbProps(TVerb* T, wchar_t quantity[], wchar_t sort[]);

@@ -21,7 +21,7 @@
 	fflush(stdin);
 	_setmode(_fileno(stdin), _O_U16TEXT);
 
-	and adding "ccs=UTF-16LE" or "ccs=UTF-8" to file opening mode parametres for FILE* streams.
+	and adding "ccs=UTF-16LE" to file opening mode parametres for FILE* streams.
 
 
 
@@ -40,6 +40,7 @@
 #include "TLinguistics.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <conio.h>
 #include <io.h>
 #include <fcntl.h>
 
@@ -546,15 +547,15 @@ void OutputWordText(TWord* w, FILE* ostream, const char* f_type) {
 }
 
 /* Get text from TWord field */
-wchar_t* GetWordText(TWord* w) {
-	wchar_t* s[TWordLen];
-	wmemcpy(s, w->private->text, wcslen(w->private->text));
-	s[wcslen(w->private->text)] = (void*)0;
-	return s;
+void GetWordText(TWord* w, wchar_t* text[]) {
+	wmemcpy(text, w->private->text, wcslen(w->private->text));
+	text[wcslen(w->private->text)] = (void*)0;
 }
 
 /* Set text to TWord field */
-void SetWordText(TWord* w, wchar_t* text) {
+void SetWordText(TWord* w, wchar_t* text[]) {
+	wmemcpy(w->private->text, L"", wcslen(L""));
+	w->private->text[0] = (void*)0;
 	wmemcpy(w->private->text, text, wcslen(text));
 	w->private->text[wcslen(text)] = (void*)0;
 }
@@ -842,10 +843,12 @@ int InputWordByParts(TWord* w, FILE* istream, const char* f_type) {
 			fwprintf(stdout, L"\nWrong amount %d: ", n);
 			return -1;
 		}
-		fwprintf(stdout, L"\nPut in ending:\n");
-		r_s = fwscanf(istream, L"%s", &w->private->ending[0]);
-		if (!r_s) return r_s;
-		w->private->ending[0][wcslen(w->private->ending[0])] = (void*)0;
+		if (n == 1) {
+			fwprintf(stdout, L"\nPut in ending:\n");
+			r_s = fwscanf(istream, L"%s", &w->private->ending[0]);
+			if (!r_s) return r_s;
+			w->private->ending[0][wcslen(w->private->ending[0])] = (void*)0;
+		}
 
 		fwprintf(stdout, L"\n");
 
@@ -956,40 +959,46 @@ void OutputWordByParts(TWord* w, FILE* ostream, const char* f_type) {
 		n = 0;
 		while (n != 3) {
 			if (w->private->prefix[n][0] != (void*)0) n++;
+			else break;
 		}
 		fwprintf(ostream, L"%d prefixes: ", n);
 		n = 0;
 		while (n != 3) {
 			if (w->private->prefix[n][0] != (void*)0) {
-				n++;
 				fwprintf(ostream, L"%s ", w->private->prefix[n]);
+				n++;
 			}
+			else break;
 		}
 
 		n = 0;
 		while (n != 2) {
 			if (w->private->radix[n][0] != (void*)0) n++;
+			else break;
 		}
 		fwprintf(ostream, L"%d radixes: ", n);
 		n = 0;
 		while (n != 2) {
 			if (w->private->radix[n][0] != (void*)0) {
-				n++;
 				fwprintf(ostream, L"%s ", w->private->radix[n]);
+				n++;
 			}
+			else break;
 		}
 
 		n = 0;
 		while (n != 3) {
 			if (w->private->suffix[n][0] != (void*)0) n++;
+			else break;
 		}
 		fwprintf(ostream, L"%d suffixes: ", n);
 		n = 0;
 		while (n != 3) {
 			if (w->private->suffix[n][0] != (void*)0) {
-				n++;
 				fwprintf(ostream, L"%s ", w->private->suffix[n]);
+				n++;
 			}
+			else break;
 		}
 
 		n = 0;
@@ -997,7 +1006,7 @@ void OutputWordByParts(TWord* w, FILE* ostream, const char* f_type) {
 			fwprintf(ostream, L"%d ending ", n);
 		}
 		else {
-			fwprintf(ostream, L"%d ending: ", n);
+			fwprintf(ostream, L"%d ending: ", 1);
 			fwprintf(ostream, L"%s ", w->private->ending[n]);
 		}
 
@@ -1010,40 +1019,46 @@ void OutputWordByParts(TWord* w, FILE* ostream, const char* f_type) {
 		n = 0;
 		while (n != 3) {
 			if (w->private->prefix[n][0] != (void*)0) n++;
+			else break;
 		}
 		fwprintf(ostream, L"%d ", n);
 		n = 0;
 		while (n != 3) {
 			if (w->private->prefix[n][0] != (void*)0) {
-				n++;
 				fwprintf(ostream, L"%s ", w->private->prefix[n]);
+				n++;
 			}
+			else break;
 		}
 
 		n = 0;
 		while (n != 2) {
 			if (w->private->radix[n][0] != (void*)0) n++;
+			else break;
 		}
 		fwprintf(ostream, L"%d ", n);
 		n = 0;
 		while (n != 2) {
 			if (w->private->radix[n][0] != (void*)0) {
-				n++;
 				fwprintf(ostream, L"%s ", w->private->radix[n]);
+				n++;
 			}
+			else break;
 		}
 
 		n = 0;
 		while (n != 3) {
 			if (w->private->suffix[n][0] != (void*)0) n++;
+			else break;
 		}
 		fwprintf(ostream, L"%d ", n);
 		n = 0;
 		while (n != 3) {
 			if (w->private->suffix[n][0] != (void*)0) {
-				n++;
 				fwprintf(ostream, L"%s ", w->private->suffix[n]);
+				n++;
 			}
+			else break;
 		}
 
 		n = 0;
@@ -1051,7 +1066,7 @@ void OutputWordByParts(TWord* w, FILE* ostream, const char* f_type) {
 			fwprintf(ostream, L"%d ", n);
 		}
 		else {
-			fwprintf(ostream, L"%d ", n);
+			fwprintf(ostream, L"%d ", 1);
 			fwprintf(ostream, L"%s ", w->private->ending[n]);
 		}
 
@@ -1084,17 +1099,23 @@ void OutputWordByParts(TWord* w, FILE* ostream, const char* f_type) {
 
 
 /* Set word properties */
-void SetWordProps(TWord* w, const wchar_t* type, const wchar_t* gender, const wchar_t* quantity, const wchar_t* sort) {
+void SetWordProps(TWord* w, wchar_t type[], wchar_t gender[], wchar_t quantity[], wchar_t sort[]) {
 	wmemcpy(w->private->type, type, wcslen(type));
+	w->private->type[wcslen(type)] = (void*)0;
 	wmemcpy(w->private->gender, gender, wcslen(gender));
+	w->private->gender[wcslen(gender)] = (void*)0;
 	wmemcpy(w->private->quantity, quantity, wcslen(quantity));
+	w->private->quantity[wcslen(quantity)] = (void*)0;
 	wmemcpy(w->private->sort, sort, wcslen(sort));
+	w->private->sort[wcslen(sort)] = (void*)0;
 }
 
 /* Change word properties */
-void ChangeWordProps(TWord* w, const wchar_t* quantity, const wchar_t* sort) {
+void ChangeWordProps(TWord* w, wchar_t quantity[], wchar_t sort[]) {
 	wmemcpy(w->private->quantity, quantity, wcslen(quantity));
+	w->private->quantity[wcslen(quantity)] = (void*)0;
 	wmemcpy(w->private->sort, sort, wcslen(sort));
+	w->private->sort[wcslen(sort)] = (void*)0;
 }
 
 
@@ -1109,6 +1130,614 @@ void ChangeWordProps(TWord* w, const wchar_t* quantity, const wchar_t* sort) {
 /* Functions for TNoun */
 
 
-//
+/* TNoun constructor */
+void TNoun_Constructor(TNoun* T) {
+	TWord_Constructor(&T->parent);
+}
+
+/* TNoun destructor */
+void TNoun_Destructor(TNoun* T) {
+	TWord_Destructor(&T->parent);
+}
+
+/* Function of creating a new TNoun object */
+TNoun* TNoun_New(void) {
+	TNoun* T = malloc(sizeof(TNoun));
+	TNoun_Constructor(T);
+	return T;
+}
+
+/* Function of deleting a TNoun object */
+void TNoun_Delete(TNoun* T) {
+	TNoun_Destructor(T);
+	free(T);
+}
 
 
+/* Input TNoun:
+	The TNoun is entered in the following format (separate by space):
+
+	text type gender quantity person sort
+
+*/
+int InputNoun(TNoun* T, FILE* istream, const char* f_type) {
+	InputWord(&T->parent, istream, f_type);
+}
+
+/* Output TNoun */
+void OutputNoun(TNoun* T, FILE* ostream, const char* f_type) {
+	OutputWord(&T->parent, ostream, f_type);
+}
+
+/* Input word text field */
+int InputNounText(TNoun* T, FILE* istream, const char* f_type) {
+	InputWordText(&T->parent, istream, f_type);
+}
+
+/* Output noun text field */
+void OutputNounText(TNoun* T, FILE* ostream, const char* f_type) {
+	OutputWordText(&T->parent, ostream, f_type);
+}
+
+/* Get text from TNoun field */
+
+void GetNounText(TNoun* T, wchar_t* text[]) {
+	GetWordText(&T->parent, text);
+}
+
+/* Set text to TNoun field */
+void SetNounText(TNoun* T, wchar_t* text[]) {
+	SetWordText(&T->parent, text);
+}
+
+/* Breakdown noun */
+void BreakdownNoun(TNoun* T, SyllsArray* sylarr) {
+	BreakdownWord(&T->parent, sylarr);
+}
+
+/* Combine noun */
+TNoun* CombineNoun(SyllsArray* sylarr) {
+	TNoun* T = CombineWord(sylarr);
+	return T;
+}
+
+
+/* Input noun by parts */
+int InputNounByParts(TNoun* T, FILE* istream, const char* f_type) {
+	InputWordByParts(&T->parent, istream, f_type);
+}
+
+/* Output noun by parts */
+void OutputNounByParts(TNoun* T, FILE* ostream, const char* f_type) {
+	OutputWordByParts(&T->parent, ostream, f_type);
+}
+
+/* Set noun properties */
+void SetNounProps(TNoun* T, const wchar_t* type, const wchar_t* gender, const wchar_t* quantity, const wchar_t* sort) {
+	SetWordProps(&T->parent, type, gender, quantity, sort);
+}
+
+/* Change noun properties */
+void ChangeNounProps(TNoun* T, const wchar_t* quantity, const wchar_t* sort) {
+	ChangeWordProps(&T->parent, quantity, sort);
+}
+
+
+
+
+
+
+
+
+
+
+/* Functions for TVerb */
+
+
+/* TVerb constructor */
+void TVerb_Constructor(TVerb* T) {
+	TWord_Constructor(&T->parent);
+}
+
+/* TVerb destructor */
+void TVerb_Destructor(TVerb* T) {
+	TWord_Destructor(&T->parent);
+}
+
+/* Function of creating a new TVerb object */
+TVerb* TVerb_New(void) {
+	TVerb* T = malloc(sizeof(TVerb));
+	TVerb_Constructor(T);
+	return T;
+}
+
+/* Function of deleting a TVerb object */
+void TVerb_Delete(TVerb* T) {
+	TVerb_Destructor(T);
+	free(T);
+}
+
+
+/* Input TVerb:
+	The TVerb is entered in the following format (separate by space):
+
+	text type gender quantity person sort
+
+*/
+int InputVerb(TVerb* T, FILE* istream, const char* f_type) {
+	InputWord(&T->parent, istream, f_type);
+}
+
+/* Output TVerb */
+void OutputVerb(TVerb* T, FILE* ostream, const char* f_type) {
+	OutputWord(&T->parent, ostream, f_type);
+}
+
+/* Input word text field */
+int InputVerbText(TVerb* T, FILE* istream, const char* f_type) {
+	InputWordText(&T->parent, istream, f_type);
+}
+
+/* Output Verb text field */
+void OutputVerbText(TVerb* T, FILE* ostream, const char* f_type) {
+	OutputWordText(&T->parent, ostream, f_type);
+}
+
+/* Get text from TVerb field */
+
+void GetVerbText(TVerb* T, wchar_t* text[]) {
+	GetWordText(&T->parent, text);
+}
+
+/* Set text to TVerb field */
+void SetVerbText(TVerb* T, wchar_t* text[]) {
+	SetWordText(&T->parent, text);
+}
+
+/* Breakdown Verb */
+void BreakdownVerb(TVerb* T, SyllsArray* sylarr) {
+	BreakdownWord(&T->parent, sylarr);
+}
+
+/* Combine Verb */
+TVerb* CombineVerb(SyllsArray* sylarr) {
+	TVerb* T = CombineWord(sylarr);
+	return T;
+}
+
+
+/* Input Verb by parts */
+int InputVerbByParts(TVerb* T, FILE* istream, const char* f_type) {
+	InputWordByParts(&T->parent, istream, f_type);
+}
+
+/* Output Verb by parts */
+void OutputVerbByParts(TVerb* T, FILE* ostream, const char* f_type) {
+	OutputWordByParts(&T->parent, ostream, f_type);
+}
+
+/* Set Verb properties */
+void SetVerbProps(TVerb* T, const wchar_t* type, const wchar_t* gender, const wchar_t* quantity, const wchar_t* sort) {
+	SetWordProps(&T->parent, type, gender, quantity, sort);
+}
+
+/* Change Verb properties */
+void ChangeVerbProps(TVerb* T, const wchar_t* quantity, const wchar_t* sort) {
+	ChangeWordProps(&T->parent, quantity, sort);
+}
+
+
+
+
+
+
+
+
+
+
+/* Functions for TAdjective */
+
+
+/* TAdjective constructor */
+void TAdjective_Constructor(TAdjective* T) {
+	TWord_Constructor(&T->parent);
+}
+
+/* TAdjective destructor */
+void TAdjective_Destructor(TAdjective* T) {
+	TWord_Destructor(&T->parent);
+}
+
+/* Function of creating a new TAdjective object */
+TAdjective* TAdjective_New(void) {
+	TAdjective* T = malloc(sizeof(TAdjective));
+	TAdjective_Constructor(T);
+	return T;
+}
+
+/* Function of deleting a TAdjective object */
+void TAdjective_Delete(TAdjective* T) {
+	TAdjective_Destructor(T);
+	free(T);
+}
+
+
+/* Input TAdjective:
+	The TAdjective is entered in the following format (separate by space):
+
+	text type gender quantity person sort
+
+*/
+int InputAdjective(TAdjective* T, FILE* istream, const char* f_type) {
+	InputWord(&T->parent, istream, f_type);
+}
+
+/* Output TAdjective */
+void OutputAdjective(TAdjective* T, FILE* ostream, const char* f_type) {
+	OutputWord(&T->parent, ostream, f_type);
+}
+
+/* Input word text field */
+int InputAdjectiveText(TAdjective* T, FILE* istream, const char* f_type) {
+	InputWordText(&T->parent, istream, f_type);
+}
+
+/* Output Adjective text field */
+void OutputAdjectiveText(TAdjective* T, FILE* ostream, const char* f_type) {
+	OutputWordText(&T->parent, ostream, f_type);
+}
+
+/* Get text from TAdjective field */
+
+void GetAdjectiveText(TAdjective* T, wchar_t* text[]) {
+	GetWordText(&T->parent, text);
+}
+
+/* Set text to TAdjective field */
+void SetAdjectiveText(TAdjective* T, wchar_t* text[]) {
+	SetWordText(&T->parent, text);
+}
+
+/* Breakdown Adjective */
+void BreakdownAdjective(TAdjective* T, SyllsArray* sylarr) {
+	BreakdownWord(&T->parent, sylarr);
+}
+
+/* Combine Adjective */
+TAdjective* CombineAdjective(SyllsArray* sylarr) {
+	TAdjective* T = CombineWord(sylarr);
+	return T;
+}
+
+
+/* Input Adjective by parts */
+int InputAdjectiveByParts(TAdjective* T, FILE* istream, const char* f_type) {
+	InputWordByParts(&T->parent, istream, f_type);
+}
+
+/* Output Adjective by parts */
+void OutputAdjectiveByParts(TAdjective* T, FILE* ostream, const char* f_type) {
+	OutputWordByParts(&T->parent, ostream, f_type);
+}
+
+/* Set Adjective properties */
+void SetAdjectiveProps(TAdjective* T, const wchar_t* type, const wchar_t* gender, const wchar_t* quantity, const wchar_t* sort) {
+	SetWordProps(&T->parent, type, gender, quantity, sort);
+}
+
+/* Change Adjective properties */
+void ChangeAdjectiveProps(TAdjective* T, const wchar_t* quantity, const wchar_t* sort) {
+	ChangeWordProps(&T->parent, quantity, sort);
+}
+
+
+
+
+
+
+
+
+
+
+/* Functions for TNumeral */
+
+
+/* TNumeral constructor */
+void TNumeral_Constructor(TNumeral* T) {
+	TWord_Constructor(&T->parent);
+}
+
+/* TNumeral destructor */
+void TNumeral_Destructor(TNumeral* T) {
+	TWord_Destructor(&T->parent);
+}
+
+/* Function of creating a new TNumeral object */
+TNumeral* TNumeral_New(void) {
+	TNumeral* T = malloc(sizeof(TNumeral));
+	TNumeral_Constructor(T);
+	return T;
+}
+
+/* Function of deleting a TNumeral object */
+void TNumeral_Delete(TNumeral* T) {
+	TNumeral_Destructor(T);
+	free(T);
+}
+
+
+/* Input TNumeral:
+	The TNumeral is entered in the following format (separate by space):
+
+	text type gender quantity person sort
+
+*/
+int InputNumeral(TNumeral* T, FILE* istream, const char* f_type) {
+	InputWord(&T->parent, istream, f_type);
+}
+
+/* Output TNumeral */
+void OutputNumeral(TNumeral* T, FILE* ostream, const char* f_type) {
+	OutputWord(&T->parent, ostream, f_type);
+}
+
+/* Input word text field */
+int InputNumeralText(TNumeral* T, FILE* istream, const char* f_type) {
+	InputWordText(&T->parent, istream, f_type);
+}
+
+/* Output Numeral text field */
+void OutputNumeralText(TNumeral* T, FILE* ostream, const char* f_type) {
+	OutputWordText(&T->parent, ostream, f_type);
+}
+
+/* Get text from TNumeral field */
+
+void GetNumeralText(TNumeral* T, wchar_t* text[]) {
+	GetWordText(&T->parent, text);
+}
+
+/* Set text to TNumeral field */
+void SetNumeralText(TNumeral* T, wchar_t* text[]) {
+	SetWordText(&T->parent, text);
+}
+
+/* Breakdown Numeral */
+void BreakdownNumeral(TNumeral* T, SyllsArray* sylarr) {
+	BreakdownWord(&T->parent, sylarr);
+}
+
+/* Combine Numeral */
+TNumeral* CombineNumeral(SyllsArray* sylarr) {
+	TNumeral* T = CombineWord(sylarr);
+	return T;
+}
+
+
+/* Input Numeral by parts */
+int InputNumeralByParts(TNumeral* T, FILE* istream, const char* f_type) {
+	InputWordByParts(&T->parent, istream, f_type);
+}
+
+/* Output Numeral by parts */
+void OutputNumeralByParts(TNumeral* T, FILE* ostream, const char* f_type) {
+	OutputWordByParts(&T->parent, ostream, f_type);
+}
+
+/* Set Numeral properties */
+void SetNumeralProps(TNumeral* T, const wchar_t* type, const wchar_t* gender, const wchar_t* quantity, const wchar_t* sort) {
+	SetWordProps(&T->parent, type, gender, quantity, sort);
+}
+
+/* Change Numeral properties */
+void ChangeNumeralProps(TNumeral* T, const wchar_t* quantity, const wchar_t* sort) {
+	ChangeWordProps(&T->parent, quantity, sort);
+}
+
+
+
+
+
+
+
+
+
+
+/* Functions for TPronoun */
+
+
+/* TPronoun constructor */
+void TPronoun_Constructor(TPronoun* T) {
+	TWord_Constructor(&T->parent);
+}
+
+/* TPronoun destructor */
+void TPronoun_Destructor(TPronoun* T) {
+	TWord_Destructor(&T->parent);
+}
+
+/* Function of creating a new TPronoun object */
+TPronoun* TPronoun_New(void) {
+	TPronoun* T = malloc(sizeof(TPronoun));
+	TPronoun_Constructor(T);
+	return T;
+}
+
+/* Function of deleting a TPronoun object */
+void TPronoun_Delete(TPronoun* T) {
+	TPronoun_Destructor(T);
+	free(T);
+}
+
+
+/* Input TPronoun:
+	The TPronoun is entered in the following format (separate by space):
+
+	text type gender quantity person sort
+
+*/
+int InputPronoun(TPronoun* T, FILE* istream, const char* f_type) {
+	InputWord(&T->parent, istream, f_type);
+}
+
+/* Output TPronoun */
+void OutputPronoun(TPronoun* T, FILE* ostream, const char* f_type) {
+	OutputWord(&T->parent, ostream, f_type);
+}
+
+/* Input word text field */
+int InputPronounText(TPronoun* T, FILE* istream, const char* f_type) {
+	InputWordText(&T->parent, istream, f_type);
+}
+
+/* Output Pronoun text field */
+void OutputPronounText(TPronoun* T, FILE* ostream, const char* f_type) {
+	OutputWordText(&T->parent, ostream, f_type);
+}
+
+/* Get text from TPronoun field */
+
+void GetPronounText(TPronoun* T, wchar_t* text[]) {
+	GetWordText(&T->parent, text);
+}
+
+/* Set text to TPronoun field */
+void SetPronounText(TPronoun* T, wchar_t* text[]) {
+	SetWordText(&T->parent, text);
+}
+
+/* Breakdown Pronoun */
+void BreakdownPronoun(TPronoun* T, SyllsArray* sylarr) {
+	BreakdownWord(&T->parent, sylarr);
+}
+
+/* Combine Pronoun */
+TPronoun* CombinePronoun(SyllsArray* sylarr) {
+	TPronoun* T = CombineWord(sylarr);
+	return T;
+}
+
+
+/* Input Pronoun by parts */
+int InputPronounByParts(TPronoun* T, FILE* istream, const char* f_type) {
+	InputWordByParts(&T->parent, istream, f_type);
+}
+
+/* Output Pronoun by parts */
+void OutputPronounByParts(TPronoun* T, FILE* ostream, const char* f_type) {
+	OutputWordByParts(&T->parent, ostream, f_type);
+}
+
+/* Set Pronoun properties */
+void SetPronounProps(TPronoun* T, const wchar_t* type, const wchar_t* gender, const wchar_t* quantity, const wchar_t* sort) {
+	SetWordProps(&T->parent, type, gender, quantity, sort);
+}
+
+/* Change Pronoun properties */
+void ChangePronounProps(TPronoun* T, const wchar_t* quantity, const wchar_t* sort) {
+	ChangeWordProps(&T->parent, quantity, sort);
+}
+
+
+
+
+
+
+
+
+
+
+/* Functions for TAdverb */
+
+
+/* TAdverb constructor */
+void TAdverb_Constructor(TAdverb* T) {
+	TWord_Constructor(&T->parent);
+}
+
+/* TAdverb destructor */
+void TAdverb_Destructor(TAdverb* T) {
+	TWord_Destructor(&T->parent);
+}
+
+/* Function of creating a new TAdverb object */
+TAdverb* TAdverb_New(void) {
+	TAdverb* T = malloc(sizeof(TAdverb));
+	TAdverb_Constructor(T);
+	return T;
+}
+
+/* Function of deleting a TAdverb object */
+void TAdverb_Delete(TAdverb* T) {
+	TAdverb_Destructor(T);
+	free(T);
+}
+
+
+/* Input TAdverb:
+	The TAdverb is entered in the following format (separate by space):
+
+	text type gender quantity person sort
+
+*/
+int InputAdverb(TAdverb* T, FILE* istream, const char* f_type) {
+	InputWord(&T->parent, istream, f_type);
+}
+
+/* Output TAdverb */
+void OutputAdverb(TAdverb* T, FILE* ostream, const char* f_type) {
+	OutputWord(&T->parent, ostream, f_type);
+}
+
+/* Input word text field */
+int InputAdverbText(TAdverb* T, FILE* istream, const char* f_type) {
+	InputWordText(&T->parent, istream, f_type);
+}
+
+/* Output Adverb text field */
+void OutputAdverbText(TAdverb* T, FILE* ostream, const char* f_type) {
+	OutputWordText(&T->parent, ostream, f_type);
+}
+
+/* Get text from TAdverb field */
+
+void GetAdverbText(TAdverb* T, wchar_t* text[]) {
+	GetWordText(&T->parent, text);
+}
+
+/* Set text to TAdverb field */
+void SetAdverbText(TAdverb* T, wchar_t* text[]) {
+	SetWordText(&T->parent, text);
+}
+
+/* Breakdown Adverb */
+void BreakdownAdverb(TAdverb* T, SyllsArray* sylarr) {
+	BreakdownWord(&T->parent, sylarr);
+}
+
+/* Combine Adverb */
+TAdverb* CombineAdverb(SyllsArray* sylarr) {
+	TAdverb* T = CombineWord(sylarr);
+	return T;
+}
+
+
+/* Input Adverb by parts */
+int InputAdverbByParts(TAdverb* T, FILE* istream, const char* f_type) {
+	InputWordByParts(&T->parent, istream, f_type);
+}
+
+/* Output Adverb by parts */
+void OutputAdverbByParts(TAdverb* T, FILE* ostream, const char* f_type) {
+	OutputWordByParts(&T->parent, ostream, f_type);
+}
+
+/* Set Adverb properties */
+void SetAdverbProps(TAdverb* T, const wchar_t* type, const wchar_t* gender, const wchar_t* quantity, const wchar_t* sort) {
+	SetWordProps(&T->parent, type, gender, quantity, sort);
+}
+
+/* Change Adverb properties */
+void ChangeAdverbProps(TAdverb* T, const wchar_t* quantity, const wchar_t* sort) {
+	ChangeWordProps(&T->parent, quantity, sort);
+}
